@@ -1,0 +1,73 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type RolesEntity {
+  IdRole: Int!
+  Role: String!
+}
+
+type UsersEntity {
+  Id: Float!
+  Name: String!
+  LastName: String!
+  StartDate: DateTime!
+  Psw: String!
+  Enabled: Boolean!
+  UserRoles: [UsersRolesEntity!]!
+  Token: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UsersRolesEntity {
+  IdUser: Int!
+  IdRole: Int!
+  Users: UsersEntity!
+  Roles: RolesEntity!
+}
+
+type Query {
+  authenticateUser(passw: String!, user: String!): UsersEntity!
+  getAllUsers: [UsersEntity!]!
+  getUserById(id: Int!): UsersEntity!
+  getUserByName(name: String!): UsersEntity!
+  getUsersRoles: [UsersRolesEntity!]!
+  getUserRoles(idUser: Int!): UsersRolesEntity!
+  getRoles: [RolesEntity!]!
+  getRole(id: Int!): RolesEntity!
+}
+
+type Mutation {
+  createUser(userInfo: UserInput!): UsersEntity!
+  updateUser(userInfo: UserInput!): UsersEntity!
+  deleteUser(IDs: [Int!]!): Float!
+  createUsersRole(usersRolesInput: UsersRolesInput!): UsersRolesEntity!
+  updateUsersRole(usersRolesInput: UsersRolesInput!): UsersRolesEntity!
+  removeUsersRole(id: Int!): UsersRolesEntity!
+  createRole(createRoleInput: RoleInput!): RolesEntity!
+  updateRole(updateRoleInput: RoleInput!): RolesEntity!
+  removeRole(id: Int!): RolesEntity!
+}
+
+input UserInput {
+  Id: Float!
+  Name: String!
+  LastName: String!
+  Psw: String!
+  Role: Float!
+  Enabled: Boolean!
+}
+
+input UsersRolesInput {
+  IdUser: Int!
+  IdRole: Int!
+}
+
+input RoleInput {
+  IdRole: Int!
+  Role: String!
+}
