@@ -6,6 +6,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RolesModule } from './roles/roles.module';
 import { UsersRolesModule } from './users-roles/users-roles.module';
+import { PlayersModule } from './players/players.module';
+import { CountriesModule } from './countries/countries.module';
 import 'dotenv/config';
 
 @Module({
@@ -32,6 +34,8 @@ import 'dotenv/config';
     usersModule,
     RolesModule,
     UsersRolesModule,
+    PlayersModule,
+    CountriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

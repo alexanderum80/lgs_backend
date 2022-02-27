@@ -131,15 +131,16 @@ export class UsersService {
 
             return new Promise<UsersEntity>((resolve, reject) => {
                 this.usersRepository.save(userInfo).then(user => {
-                    const userRoles: UsersRolesEntity = {
-                        IdRole: userInfo.Role,
-                        IdUser: user.Id
-                    };
-                    this._usersRolesSvc.create(userRoles).then(() => {
-                        resolve(user);
-                    }).catch(err => {
-                        reject(err.message || err);
-                    })
+                    userInfo.Role.forEach(async role => {
+                        const userRoles: UsersRolesEntity = {
+                            IdRole: role,
+                            IdUser: user.Id
+                        };
+                        await this._usersRolesSvc.create(userRoles).catch(err => {
+                            reject(err.message || err);
+                        });
+                    });
+                    resolve(user);
                 }).catch(err => {
                     reject(err.message || err);
                 });
@@ -160,15 +161,16 @@ export class UsersService {
             return new Promise<UsersEntity>((resolve, reject) => {
                 this.usersRepository.save(userInfo).then(user => {
                     this._usersRolesSvc.remove(userInfo.Id).then(() => {
-                        const userRoles: UsersRolesEntity = {
-                            IdRole: userInfo.Role,
-                            IdUser: user.Id
-                        };
-                        this._usersRolesSvc.create(userRoles).then(() => {
-                            resolve(user);
-                        }).catch(err => {
-                            reject(err.message || err);
+                        userInfo.Role.forEach(async role => {
+                            const userRoles: UsersRolesEntity = {
+                                IdRole: role,
+                                IdUser: user.Id
+                            };
+                            await this._usersRolesSvc.create(userRoles).catch(err => {
+                                reject(err.message || err);
+                            });
                         });
+                        resolve(user);
                     }).catch(err => {
                         reject(err.message || err);
                     });

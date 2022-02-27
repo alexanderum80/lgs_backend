@@ -30,6 +30,25 @@ type UsersRolesEntity {
   Roles: RolesEntity!
 }
 
+type PlayersEntity {
+  IdPlayer: Int!
+  Name: String!
+  LastName: String!
+  StartDate: DateTime!
+  Personal_Id: String!
+  Passport_Number: String!
+  Note: String!
+  CellPhone: String!
+  Enabled: Boolean!
+  IdCountry: Int!
+}
+
+type CountriesEntity {
+  IdCountry: Int!
+  Name: String!
+  Enabled: Boolean!
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
@@ -39,6 +58,10 @@ type Query {
   getUserRoles(idUser: Int!): UsersRolesEntity!
   getRoles: [RolesEntity!]!
   getRole(id: Int!): RolesEntity!
+  getPlayers: [PlayersEntity!]!
+  getPlayer(id: Int!): PlayersEntity!
+  getCountries: [CountriesEntity!]!
+  getCountry(id: Int!): CountriesEntity!
 }
 
 type Mutation {
@@ -51,6 +74,12 @@ type Mutation {
   createRole(createRoleInput: RoleInput!): RolesEntity!
   updateRole(updateRoleInput: RoleInput!): RolesEntity!
   removeRole(id: Int!): RolesEntity!
+  createPlayer(playerInput: PlayerInput!): PlayersEntity!
+  updatePlayer(playerInput: PlayerInput!): PlayersEntity!
+  deletePlayer(IDs: [Int!]!): Float!
+  createCountry(countryInput: CountryInput!): CountriesEntity!
+  updateCountry(countryInput: CountryInput!): CountriesEntity!
+  removeCountry(id: Int!): CountriesEntity!
 }
 
 input UserInput {
@@ -58,7 +87,7 @@ input UserInput {
   Name: String!
   LastName: String!
   Psw: String!
-  Role: Float!
+  Role: [Int!]!
   Enabled: Boolean!
 }
 
@@ -70,4 +99,23 @@ input UsersRolesInput {
 input RoleInput {
   IdRole: Int!
   Role: String!
+}
+
+input PlayerInput {
+  IdPlayer: Float!
+  Name: String!
+  LastName: String!
+  StartDate: DateTime
+  Personal_Id: String!
+  Passport_Number: String!
+  Note: String!
+  CellPhone: String!
+  Enabled: Boolean!
+  IdCountry: Int
+}
+
+input CountryInput {
+  IdCountry: Int!
+  Name: String!
+  Enabled: Boolean!
 }

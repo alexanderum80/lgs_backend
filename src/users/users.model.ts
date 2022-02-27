@@ -1,5 +1,5 @@
 import { UsersEntity } from './users.entity';
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 export enum ERoles {
     'Administrator' = 1,
@@ -24,8 +24,8 @@ export class UserInput extends UsersEntity {
     @Field()
     Psw: string;
     
-    @Field()
-    Role: number;
+    @Field(() => [Int])
+    Role: number[];
 
     @Field()
     Enabled: boolean
