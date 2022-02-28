@@ -79,7 +79,7 @@ type Mutation {
   deletePlayer(IDs: [Int!]!): Float!
   createCountry(countryInput: CountryInput!): CountriesEntity!
   updateCountry(countryInput: CountryInput!): CountriesEntity!
-  removeCountry(id: Int!): CountriesEntity!
+  deleteCountry(IDs: [Int!]!): Float!
 }
 
 input UserInput {

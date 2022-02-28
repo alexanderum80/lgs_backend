@@ -11,10 +11,6 @@ export class CountriesService {
     @InjectRepository(CountriesEntity) private readonly countriesRepository: Repository<CountriesEntity>
   ) {}
 
-  create(countryInput: CountryInput) {
-    return 'This action adds a new country';
-  }
-
   async findAll(): Promise<CountriesEntity[]> {
     try {
       return new Promise<CountriesEntity[]>((resolve, reject) => {
@@ -29,15 +25,61 @@ export class CountriesService {
     }  
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} country`;
+  async findOne(id: number): Promise<CountriesEntity> {
+    try {
+      return new Promise<CountriesEntity>((resolve, reject) => {
+         this.countriesRepository.findOne(id).then(result => {
+             resolve(result);
+         }).catch(err => {
+             reject(err.message || err);
+         });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    } 
+  }
+
+  async create(countryInput: CountryInput): Promise<CountriesEntity> {
+    try {
+      delete countryInput.IdCountry;
+
+      return new Promise<CountriesEntity>((resolve, reject) => {
+         this.countriesRepository.save(countryInput).then(result => {
+             resolve(result);
+         }).catch(err => {
+             reject(err.message || err);
+         });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    } 
   }
 
   update(countryInput: CountryInput) {
-    return `This action updates a #${countryInput.IdCountry} country`;
+    try {
+      return new Promise<CountriesEntity>((resolve, reject) => {
+         this.countriesRepository.save(countryInput).then(result => {
+             resolve(result);
+         }).catch(err => {
+             reject(err.message || err);
+         });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    } 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} country`;
+  async delete(IDs: number[]): Promise<number> {
+    try {
+      return new Promise<number>((resolve, reject) => {
+         this.countriesRepository.delete(IDs).then(result => {
+             resolve(result.affected);
+         }).catch(err => {
+             reject(err.message || err);
+         });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    } 
   }
 }

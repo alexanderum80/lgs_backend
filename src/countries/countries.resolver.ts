@@ -8,12 +8,12 @@ export class CountriesResolver {
   constructor(private readonly countriesService: CountriesService) {}
 
   @Query(() => [CountriesEntity], { name: 'getCountries' })
-  findAll() {
+  async findAll(): Promise<CountriesEntity[]> {
     return this.countriesService.findAll();
   }
 
   @Query(() => CountriesEntity, { name: 'getCountry' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  async findOne(@Args('id', { type: () => Int }) id: number): Promise<CountriesEntity> {
     return this.countriesService.findOne(id);
   }
 
@@ -27,8 +27,8 @@ export class CountriesResolver {
     return this.countriesService.update(countryInput);
   }
 
-  @Mutation(() => CountriesEntity)
-  removeCountry(@Args('id', { type: () => Int }) id: number) {
-    return this.countriesService.remove(id);
+  @Mutation(() => Number)
+  deleteCountry(@Args('IDs', { type: () => [Int] }) IDs: number[]) {
+    return this.countriesService.delete(IDs);
   }
 }
