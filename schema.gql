@@ -49,6 +49,13 @@ type CountriesEntity {
   Enabled: Boolean!
 }
 
+type CoinEntity {
+  IdCoin: Int!
+  Coin: String!
+  Rate: Float!
+  Enabled: Boolean!
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
@@ -62,6 +69,8 @@ type Query {
   getPlayer(id: Int!): PlayersEntity!
   getCountries: [CountriesEntity!]!
   getCountry(id: Int!): CountriesEntity!
+  getCoins: [CoinEntity!]!
+  getCoin(id: Int!): CoinEntity!
 }
 
 type Mutation {
@@ -80,6 +89,9 @@ type Mutation {
   createCountry(countryInput: CountryInput!): CountriesEntity!
   updateCountry(countryInput: CountryInput!): CountriesEntity!
   deleteCountry(IDs: [Int!]!): Float!
+  createCoin(coinInput: CoinInput!): CoinEntity!
+  updateCoin(coinInput: CoinInput!): CoinEntity!
+  deleteCoin(IDs: [Int!]!): CoinEntity!
 }
 
 input UserInput {
@@ -117,5 +129,12 @@ input PlayerInput {
 input CountryInput {
   IdCountry: Int!
   Name: String!
+  Enabled: Boolean!
+}
+
+input CoinInput {
+  IdCoin: Int!
+  Coin: String!
+  Rate: Float!
   Enabled: Boolean!
 }
