@@ -51,17 +51,21 @@ export class UsersService {
                         // }
     
                         const validPassw = bcrypt.compareSync(passw, '$2a$12$' + response.Psw);
+
+                        if (!response.Enabled) {
+                            reject('This user is Disabled. Cannot Loggin.')
+                        }
     
-                        if (validPassw) {
-                            userInfo.Id = response.Id;
-                            userInfo.Name = response.Name;
-                            userInfo.LastName = response.LastName;
-                            userInfo.Token = await this.createToken(userInfo);
-    
-                            resolve(userInfo);
-                        } else {
+                        if (!validPassw) {
                             reject('INVALID Username o password.');
                         }
+                        
+                        userInfo.Id = response.Id;
+                        userInfo.Name = response.Name;
+                        userInfo.LastName = response.LastName;
+                        userInfo.Token = await this.createToken(userInfo);
+
+                        resolve(userInfo);
                     }
                 }).catch(err => {
                     reject(err);

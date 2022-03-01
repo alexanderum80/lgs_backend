@@ -9,6 +9,7 @@ import { UsersRolesModule } from './users-roles/users-roles.module';
 import { PlayersModule } from './players/players.module';
 import { CountriesModule } from './countries/countries.module';
 import { CoinsModule } from './coins/coins.module';
+import { LendersModule } from './lenders/lenders.module';
 import 'dotenv/config';
 
 @Module({
@@ -38,6 +39,7 @@ import 'dotenv/config';
     PlayersModule,
     CountriesModule,
     CoinsModule,
+    LendersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

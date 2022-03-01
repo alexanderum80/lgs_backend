@@ -56,6 +56,12 @@ type CoinEntity {
   Enabled: Boolean!
 }
 
+type LendersEntity {
+  IdLender: Int!
+  Name: String!
+  Enabled: Boolean!
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
@@ -71,6 +77,8 @@ type Query {
   getCountry(id: Int!): CountriesEntity!
   getCoins: [CoinEntity!]!
   getCoin(id: Int!): CoinEntity!
+  getLenders: [LendersEntity!]!
+  getLender(id: Int!): LendersEntity!
 }
 
 type Mutation {
@@ -92,6 +100,9 @@ type Mutation {
   createCoin(coinInput: CoinInput!): CoinEntity!
   updateCoin(coinInput: CoinInput!): CoinEntity!
   deleteCoin(IDs: [Int!]!): CoinEntity!
+  createLender(lenderInput: LenderInput!): LendersEntity!
+  updateLender(lenderInput: LenderInput!): LendersEntity!
+  deleteLender(IDs: [Int!]!): Float!
 }
 
 input UserInput {
@@ -136,5 +147,11 @@ input CoinInput {
   IdCoin: Int!
   Coin: String!
   Rate: Float!
+  Enabled: Boolean!
+}
+
+input LenderInput {
+  IdLender: Int!
+  Name: String!
   Enabled: Boolean!
 }
