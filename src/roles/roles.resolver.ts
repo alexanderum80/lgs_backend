@@ -28,7 +28,7 @@ export class RolesResolver {
   }
 
   @Mutation(() => RolesEntity)
-  removeRole(@Args('id', { type: () => Int }) id: number) {
+  deleteRole(@Args('id', { type: () => Int }) id: number) {
     return this.rolesService.delete(id);
   }
 }

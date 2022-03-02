@@ -79,6 +79,11 @@ type CitiesEntity {
   Enabled: Boolean!
 }
 
+type TablesTypeEntity {
+  IdTableType: Int!
+  Name: String!
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
@@ -100,6 +105,8 @@ type Query {
   getCities: [CitiesEntity!]!
   getCitiesByCountry(idCountry: Int!): [CitiesEntity!]!
   getCity(id: Int!): CitiesEntity!
+  getTablesType: [TablesTypeEntity!]!
+  getTableType(id: Int!): TablesTypeEntity!
 }
 
 type Mutation {
@@ -111,7 +118,7 @@ type Mutation {
   removeUsersRole(id: Int!): UsersRolesEntity!
   createRole(createRoleInput: RoleInput!): RolesEntity!
   updateRole(updateRoleInput: RoleInput!): RolesEntity!
-  removeRole(id: Int!): RolesEntity!
+  deleteRole(id: Int!): RolesEntity!
   createPlayer(playerInput: PlayerInput!): PlayersEntity!
   updatePlayer(playerInput: PlayerInput!): PlayersEntity!
   deletePlayer(IDs: [Int!]!): Float!
@@ -128,6 +135,9 @@ type Mutation {
   createCity(cityInput: CityInput!): CitiesEntity!
   updateCity(cityInput: CityInput!): CitiesEntity!
   removeCity(IDS: [Int!]!): CitiesEntity!
+  createTableType(tableTypeInput: TableTypeInput!): TablesTypeEntity!
+  updateTableType(tableTypeInput: TableTypeInput!): TablesTypeEntity!
+  deleteTableType(IDs: [Int!]!): Float!
 }
 
 input UserInput {
@@ -195,4 +205,9 @@ input CityInput {
   City: String!
   IdCountry: Int!
   Enabled: Boolean!
+}
+
+input TableTypeInput {
+  IdTableType: Int!
+  Name: String!
 }
