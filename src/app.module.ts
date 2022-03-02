@@ -10,6 +10,8 @@ import { PlayersModule } from './players/players.module';
 import { CountriesModule } from './countries/countries.module';
 import { CoinsModule } from './coins/coins.module';
 import { LendersModule } from './lenders/lenders.module';
+import { CasinoInfoModule } from './casino-info/casino-info.module';
+import { CitiesModule } from './cities/cities.module';
 import 'dotenv/config';
 
 @Module({
@@ -40,6 +42,8 @@ import 'dotenv/config';
     CountriesModule,
     CoinsModule,
     LendersModule,
+    CasinoInfoModule,
+    CitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

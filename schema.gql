@@ -62,6 +62,23 @@ type LendersEntity {
   Enabled: Boolean!
 }
 
+type CasinoInfoEntity {
+  Id: Float!
+  Name: String!
+  Address: String!
+  Phone: String
+  IdCountry: Float!
+  IdCity: Float!
+}
+
+type CitiesEntity {
+  IdCity: Int!
+  City: String!
+  IdCountry: Float!
+  Country: CountriesEntity!
+  Enabled: Boolean!
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
@@ -79,6 +96,10 @@ type Query {
   getCoin(id: Int!): CoinEntity!
   getLenders: [LendersEntity!]!
   getLender(id: Int!): LendersEntity!
+  getCasinoInfo: CasinoInfoEntity!
+  getCities: [CitiesEntity!]!
+  getCitiesByCountry(idCountry: Int!): [CitiesEntity!]!
+  getCity(id: Int!): CitiesEntity!
 }
 
 type Mutation {
@@ -103,6 +124,10 @@ type Mutation {
   createLender(lenderInput: LenderInput!): LendersEntity!
   updateLender(lenderInput: LenderInput!): LendersEntity!
   deleteLender(IDs: [Int!]!): Float!
+  saveCasinoInfo(casinoInfoInput: CasinoInfoInput!): CasinoInfoEntity!
+  createCity(cityInput: CityInput!): CitiesEntity!
+  updateCity(cityInput: CityInput!): CitiesEntity!
+  removeCity(IDS: [Int!]!): CitiesEntity!
 }
 
 input UserInput {
@@ -153,5 +178,21 @@ input CoinInput {
 input LenderInput {
   IdLender: Int!
   Name: String!
+  Enabled: Boolean!
+}
+
+input CasinoInfoInput {
+  Id: Float!
+  Name: String!
+  Address: String!
+  Phone: String
+  IdCountry: Float!
+  IdCity: Float!
+}
+
+input CityInput {
+  IdCity: Int!
+  City: String!
+  IdCountry: Int!
   Enabled: Boolean!
 }

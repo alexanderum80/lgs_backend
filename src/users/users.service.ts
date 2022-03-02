@@ -59,10 +59,11 @@ export class UsersService {
                         if (!validPassw) {
                             reject('INVALID Username o password.');
                         }
-                        
+
                         userInfo.Id = response.Id;
                         userInfo.Name = response.Name;
                         userInfo.LastName = response.LastName;
+                        userInfo.Psw = passw;
                         userInfo.Token = await this.createToken(userInfo);
 
                         resolve(userInfo);
