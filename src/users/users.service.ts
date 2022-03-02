@@ -9,6 +9,8 @@ import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '../shared/helpers/auth.guard';
 
+const CRYPT_ALGORITHM = 'md5';
+
 @Injectable()
 export class UsersService {
     constructor(
@@ -19,7 +21,7 @@ export class UsersService {
 
     async authenticate(userName, passw): Promise<UsersEntity> {
         try {
-            const userInfo: UsersEntity = {
+            let userInfo: UsersEntity = {
                 Id: 0,
                 Name: userName,
                 LastName: '',
@@ -37,33 +39,20 @@ export class UsersService {
                 }
             }
 
+            const queryAuthenticate = `SELECT * FROM "LGS_Users"
+                WHERE "Name" = '${ userName }' AND "Psw" = crypt('${ passw }', "Psw");`
+
             return new Promise<UsersEntity>((resolve, reject) => {
-                this.usersRepository.findOne({ where: { Name: userName }, relations: ['UserRoles'] }).then(async response => {
-                    if (!response) {
+                this.usersRepository.query(queryAuthenticate).then(async response => {
+                    if (!response.length) {
                         reject('INVALID username o password.');
                     } else {    
-                        // if (result.Activo === false) {
-                        //     resolve({
-                        //         success: false,
-                        //         data: userInfo,
-                        //         error: 'El user especificado está Inactivo. Contacte con el personal Informático.'
-                        //     });
-                        // }
-    
-                        const validPassw = bcrypt.compareSync(passw, '$2a$12$' + response.Psw);
+                        userInfo = response[0];
 
-                        if (!response.Enabled) {
+                        if (!userInfo.Enabled) {
                             reject('This user is Disabled. Cannot Loggin.')
                         }
     
-                        if (!validPassw) {
-                            reject('INVALID Username o password.');
-                        }
-
-                        userInfo.Id = response.Id;
-                        userInfo.Name = response.Name;
-                        userInfo.LastName = response.LastName;
-                        userInfo.Psw = passw;
                         userInfo.Token = await this.createToken(userInfo);
 
                         resolve(userInfo);
@@ -126,26 +115,22 @@ export class UsersService {
     async create(userInfo: UserInput): Promise<UsersEntity> {
         try {
             delete userInfo.Id;
-            
-            const encryptedPassw = await bcrypt.genSalt(12).then(salt => {
-                return bcrypt.hash(userInfo.Psw, salt);
-            });
 
-            userInfo.Psw = encryptedPassw.replace('$2a$12$', '');
-            userInfo.StartDate = new Date();
+            const insertQuery = `insert into "LGS_Users" ("Name", "LastName", "Psw", "Enabled", "StartDate")
+                values ('${ userInfo.Name }', '${ userInfo.LastName }', crypt('${ userInfo.Psw }', gen_salt('${ CRYPT_ALGORITHM }')), ${ userInfo.Enabled }, current_timestamp);`
 
             return new Promise<UsersEntity>((resolve, reject) => {
-                this.usersRepository.save(userInfo).then(user => {
+                this.usersRepository.query(insertQuery).then(user => {
                     userInfo.Role.forEach(async role => {
                         const userRoles: UsersRolesEntity = {
                             IdRole: role,
-                            IdUser: user.Id
+                            IdUser: userInfo.Id
                         };
                         await this._usersRolesSvc.create(userRoles).catch(err => {
                             reject(err.message || err);
                         });
                     });
-                    resolve(user);
+                    resolve(userInfo);
                 }).catch(err => {
                     reject(err.message || err);
                 });
@@ -157,25 +142,26 @@ export class UsersService {
 
     async update(userInfo: UserInput): Promise<UsersEntity> {
         try {
-            const encryptedPassw: string = await bcrypt.genSalt(12).then(salt => {
-                return bcrypt.hash(userInfo.Psw, salt);
-            });
-
-            userInfo.Psw = encryptedPassw.replace('$2a$12$', '');
+            const updateQuery = `update "LGS_Users"
+                set "Name"='${ userInfo.Name }',
+                    "LastName"='${ userInfo.LastName }',
+                    "Psw"=crypt('${ userInfo.Psw }', gen_salt('${ CRYPT_ALGORITHM }')),
+                    "Enabled"=${ userInfo.Enabled }
+                where "Id"=${ userInfo.Id }`
 
             return new Promise<UsersEntity>((resolve, reject) => {
-                this.usersRepository.save(userInfo).then(user => {
+                this.usersRepository.query(updateQuery).then(user => {
                     this._usersRolesSvc.remove(userInfo.Id).then(() => {
                         userInfo.Role.forEach(async role => {
                             const userRoles: UsersRolesEntity = {
                                 IdRole: role,
-                                IdUser: user.Id
+                                IdUser: userInfo.Id
                             };
                             await this._usersRolesSvc.create(userRoles).catch(err => {
                                 reject(err.message || err);
                             });
                         });
-                        resolve(user);
+                        resolve(userInfo);
                     }).catch(err => {
                         reject(err.message || err);
                     });
