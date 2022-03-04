@@ -5,9 +5,13 @@ import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany } from 't
 @ObjectType()
 @Entity('LGS_Users')
 export class UsersEntity {
-    @Field()
+    @Field({ nullable: true })
     @PrimaryGeneratedColumn()
-    Id: number;
+    Id?: number;
+
+    @Field()
+    @Column()
+    UserName: string;
 
     @Field()
     @Column()

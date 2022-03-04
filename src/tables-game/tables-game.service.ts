@@ -1,19 +1,19 @@
-import { TablesTypeEntity } from './tables-type.entity';
-import { TableTypeInput } from './tables-type.model';
+import { TablesGameEntity } from './tables-game.entity';
+import { TableGameInput } from './tables-game.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class TablesTypeService {
+export class TablesGameService {
   constructor(
-    @InjectRepository(TablesTypeEntity) private readonly tableTypeRepository: Repository<TablesTypeEntity>
+    @InjectRepository(TablesGameEntity) private readonly tableGameRepository: Repository<TablesGameEntity>
   ) {}
 
-  async findAll(): Promise<TablesTypeEntity[]> {
+  async findAll(): Promise<TablesGameEntity[]> {
     try {
-      return new Promise<TablesTypeEntity[]>((resolve, reject) => {
-         this.tableTypeRepository.find().then(result => {
+      return new Promise<TablesGameEntity[]>((resolve, reject) => {
+         this.tableGameRepository.find().then(result => {
              resolve(result);
          }).catch(err => {
              reject(err.message || err);
@@ -24,10 +24,10 @@ export class TablesTypeService {
     }  
   }
 
-  async findOne(id: number): Promise<TablesTypeEntity> {
+  async findOne(id: number): Promise<TablesGameEntity> {
     try {
-      return new Promise<TablesTypeEntity>((resolve, reject) => {
-         this.tableTypeRepository.findOne(id).then(result => {
+      return new Promise<TablesGameEntity>((resolve, reject) => {
+         this.tableGameRepository.findOne(id).then(result => {
              resolve(result);
          }).catch(err => {
              reject(err.message || err);
@@ -38,12 +38,12 @@ export class TablesTypeService {
     } 
   }
 
-  async create(tableTypeInput: TableTypeInput): Promise<TablesTypeEntity> {
+  async create(tableGameInput: TableGameInput): Promise<TablesGameEntity> {
     try {
-      delete tableTypeInput.IdTableType;
+      delete tableGameInput.IdGame;
 
-      return new Promise<TablesTypeEntity>((resolve, reject) => {
-         this.tableTypeRepository.save(tableTypeInput).then(result => {
+      return new Promise<TablesGameEntity>((resolve, reject) => {
+         this.tableGameRepository.save(tableGameInput).then(result => {
              resolve(result);
          }).catch(err => {
              reject(err.message || err);
@@ -54,10 +54,10 @@ export class TablesTypeService {
     } 
   }
 
-  update(tableTypeInput: TableTypeInput) {
+  update(tableGameInput: TableGameInput) {
     try {
-      return new Promise<TablesTypeEntity>((resolve, reject) => {
-         this.tableTypeRepository.save(tableTypeInput).then(result => {
+      return new Promise<TablesGameEntity>((resolve, reject) => {
+         this.tableGameRepository.save(tableGameInput).then(result => {
              resolve(result);
          }).catch(err => {
              reject(err.message || err);
@@ -71,7 +71,7 @@ export class TablesTypeService {
   async delete(IDs: number[]): Promise<number> {
     try {
       return new Promise<number>((resolve, reject) => {
-         this.tableTypeRepository.delete(IDs).then(result => {
+         this.tableGameRepository.delete(IDs).then(result => {
              resolve(result.affected);
          }).catch(err => {
              reject(err.message || err);

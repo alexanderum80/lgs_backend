@@ -1,10 +1,13 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
 
 @InputType()
-export class TableTypeInput {
+export class TableGameInput {
   @Field(() => Int)
-  IdTableType: number;
+  IdGame: number;
 
   @Field()
   Name: string;
+    
+  @Field()
+  StartAmount: number;
 }

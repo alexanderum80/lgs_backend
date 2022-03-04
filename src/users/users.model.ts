@@ -16,6 +16,9 @@ export class UserInput extends UsersEntity {
     Id: number;
 
     @Field()
+    UserName: string;
+
+    @Field()
     Name: string;
 
     @Field()

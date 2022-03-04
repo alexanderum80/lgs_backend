@@ -8,6 +8,7 @@ import { Connection, Repository, DeleteResult } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '../shared/helpers/auth.guard';
+import { lowerCase  } from 'lodash';
 
 const CRYPT_ALGORITHM = 'md5';
 
@@ -23,7 +24,8 @@ export class UsersService {
         try {
             let userInfo: UsersEntity = {
                 Id: 0,
-                Name: userName,
+                UserName: userName,
+                Name: '',
                 LastName: '',
                 Psw: '',
                 // Roles: [{ IdRole: 1, IdUser: 0 }],
@@ -40,7 +42,7 @@ export class UsersService {
             }
 
             const queryAuthenticate = `SELECT * FROM "LGS_Users"
-                WHERE "Name" = '${ userName }' AND "Psw" = crypt('${ passw }', "Psw");`
+                WHERE "UserName" = '${ lowerCase(userName) }' AND "Psw" = crypt('${ passw }', "Psw");`
 
             return new Promise<UsersEntity>((resolve, reject) => {
                 this.usersRepository.query(queryAuthenticate).then(async response => {
@@ -116,8 +118,8 @@ export class UsersService {
         try {
             delete userInfo.Id;
 
-            const insertQuery = `insert into "LGS_Users" ("Name", "LastName", "Psw", "Enabled", "StartDate")
-                values ('${ userInfo.Name }', '${ userInfo.LastName }', crypt('${ userInfo.Psw }', gen_salt('${ CRYPT_ALGORITHM }')), ${ userInfo.Enabled }, current_timestamp);`
+            const insertQuery = `insert into "LGS_Users" ("UserName", "Name", "LastName", "Psw", "Enabled", "StartDate")
+                values ('${ lowerCase(userInfo.UserName) }', '${ userInfo.Name }', '${ userInfo.LastName }', crypt('${ userInfo.Psw }', gen_salt('${ CRYPT_ALGORITHM }')), ${ userInfo.Enabled }, current_timestamp);`
 
             return new Promise<UsersEntity>((resolve, reject) => {
                 this.usersRepository.query(insertQuery).then(user => {
@@ -143,7 +145,8 @@ export class UsersService {
     async update(userInfo: UserInput): Promise<UsersEntity> {
         try {
             const updateQuery = `update "LGS_Users"
-                set "Name"='${ userInfo.Name }',
+                set "UserName"='${ lowerCase(userInfo.UserName) }', 
+                    "Name"='${ userInfo.Name }',
                     "LastName"='${ userInfo.LastName }',
                     "Psw"=crypt('${ userInfo.Psw }', gen_salt('${ CRYPT_ALGORITHM }')),
                     "Enabled"=${ userInfo.Enabled }

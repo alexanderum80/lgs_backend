@@ -8,7 +8,8 @@ type RolesEntity {
 }
 
 type UsersEntity {
-  Id: Float!
+  Id: Float
+  UserName: String!
   Name: String!
   LastName: String!
   StartDate: DateTime!
@@ -79,9 +80,18 @@ type CitiesEntity {
   Enabled: Boolean!
 }
 
-type TablesTypeEntity {
-  IdTableType: Int!
+type TablesGameEntity {
+  IdGame: Int!
   Name: String!
+  StartAmount: Float!
+}
+
+type TablesEntity {
+  IdTable: Int!
+  Description: String!
+  IdGame: Int!
+  TableGame: TablesGameEntity!
+  Enabled: Boolean!
 }
 
 type Query {
@@ -105,8 +115,10 @@ type Query {
   getCities: [CitiesEntity!]!
   getCitiesByCountry(idCountry: Int!): [CitiesEntity!]!
   getCity(id: Int!): CitiesEntity!
-  getTablesType: [TablesTypeEntity!]!
-  getTableType(id: Int!): TablesTypeEntity!
+  getTablesGame: [TablesGameEntity!]!
+  getTableGame(id: Int!): TablesGameEntity!
+  getTables: [TablesEntity!]!
+  getTable(id: Int!): TablesEntity!
 }
 
 type Mutation {
@@ -135,13 +147,17 @@ type Mutation {
   createCity(cityInput: CityInput!): CitiesEntity!
   updateCity(cityInput: CityInput!): CitiesEntity!
   removeCity(IDS: [Int!]!): CitiesEntity!
-  createTableType(tableTypeInput: TableTypeInput!): TablesTypeEntity!
-  updateTableType(tableTypeInput: TableTypeInput!): TablesTypeEntity!
-  deleteTableType(IDs: [Int!]!): Float!
+  createTableGame(TableGameInput: TableGameInput!): TablesGameEntity!
+  updateTableGame(TableGameInput: TableGameInput!): TablesGameEntity!
+  deleteTableGame(IDs: [Int!]!): Float!
+  createTable(tableInput: TableInput!): TablesEntity!
+  updateTable(tableInput: TableInput!): TablesEntity!
+  deleteTable(IDs: [Int!]!): Float!
 }
 
 input UserInput {
   Id: Float!
+  UserName: String!
   Name: String!
   LastName: String!
   Psw: String!
@@ -207,7 +223,15 @@ input CityInput {
   Enabled: Boolean!
 }
 
-input TableTypeInput {
-  IdTableType: Int!
+input TableGameInput {
+  IdGame: Int!
   Name: String!
+  StartAmount: Float!
+}
+
+input TableInput {
+  IdTable: Int!
+  Description: String!
+  IdGame: Int!
+  Enabled: Boolean!
 }
