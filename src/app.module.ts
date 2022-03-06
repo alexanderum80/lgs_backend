@@ -14,6 +14,7 @@ import { CasinoInfoModule } from './casino-info/casino-info.module';
 import { CitiesModule } from './cities/cities.module';
 import { TablesGameModule } from './tables-game/tables-game.module';
 import { TablesModule } from './tables/tables.module';
+import { ChipsModule } from './chips/chips.module';
 import 'dotenv/config';
 
 @Module({
@@ -48,6 +49,7 @@ import 'dotenv/config';
     CitiesModule,
     TablesGameModule,
     TablesModule,
+    ChipsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

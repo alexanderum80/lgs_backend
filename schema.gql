@@ -94,6 +94,13 @@ type TablesEntity {
   Enabled: Boolean!
 }
 
+type ChipsEntity {
+  IdChip: Int!
+  Color: String!
+  Value: Float!
+  Image: String
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
@@ -119,6 +126,8 @@ type Query {
   getTableGame(id: Int!): TablesGameEntity!
   getTables: [TablesEntity!]!
   getTable(id: Int!): TablesEntity!
+  getChips: [ChipsEntity!]!
+  getChip(id: Int!): ChipsEntity!
 }
 
 type Mutation {
@@ -153,6 +162,9 @@ type Mutation {
   createTable(tableInput: TableInput!): TablesEntity!
   updateTable(tableInput: TableInput!): TablesEntity!
   deleteTable(IDs: [Int!]!): Float!
+  createChip(chipInput: ChipInput!): ChipsEntity!
+  updateChip(chipInput: ChipInput!): ChipsEntity!
+  deleteChip(IDs: [Int!]!): ChipsEntity!
 }
 
 input UserInput {
@@ -234,4 +246,11 @@ input TableInput {
   Description: String!
   IdGame: Int!
   Enabled: Boolean!
+}
+
+input ChipInput {
+  IdChip: Int!
+  Color: String!
+  Value: Float!
+  Image: String
 }
