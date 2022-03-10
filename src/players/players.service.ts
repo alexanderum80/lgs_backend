@@ -70,10 +70,37 @@ export class PlayersService {
     }
   }
 
-  async delete(IDs: number[]): Promise<number> {
+  async delete(ids: number[]): Promise<number> {
     try {
       return new Promise<number>((resolve, reject) => {
-        this.playersRepository.delete(IDs).then(result => {
+        this.playersRepository.createQueryBuilder()
+          .update()
+          .set({
+            Deleted: true
+          })
+          .where('IdPlayer in (:...ids)', { ids})
+          .execute()
+        .then(result => {
+          resolve(result.affected);
+        }).catch(err => {
+          reject(err.message || err);
+        });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }
+  }
+  
+  async recover(id: number): Promise<number> {
+    try {
+      return new Promise<number>((resolve, reject) => {
+        this.playersRepository.createQueryBuilder()
+          .update()
+          .set({
+            Deleted: false
+          })
+          .where('IdPlayer = :id', { id })
+        .execute().then(result => {
           resolve(result.affected);
         }).catch(err => {
           reject(err.message || err);

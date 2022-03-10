@@ -64,4 +64,12 @@ export class UsersResolver {
     ): Promise<Number> {
         return this._usersService.delete(IDs);
     }
+
+    @Mutation(() => Number)
+    // @UseGuards(new AuthGuard())
+    async recoverUser(
+        @Args({ name: 'id', type: () => Int }) id: number
+    ): Promise<Number> {
+        return this._usersService.recover(id);
+    }
 }

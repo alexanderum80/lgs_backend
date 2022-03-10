@@ -39,4 +39,11 @@ export class PlayersResolver {
   ): Promise<number> {
     return this.playersService.delete(IDs);
   }
+
+  @Mutation(() => Number)
+  async recoverPlayer(
+    @Args('id', { type: () => Int }) id: number
+  ): Promise<number> {
+    return this.playersService.recover(id);
+  }
 }

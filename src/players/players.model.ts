@@ -32,4 +32,7 @@ export class PlayerInput extends PlayersEntity {
   
     @Field(() => Int, { nullable: true })
     IdCountry?: number;   
+
+    @Field(() => Date)
+    DateOfBirth: Date;
 }

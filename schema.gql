@@ -12,9 +12,10 @@ type UsersEntity {
   UserName: String!
   Name: String!
   LastName: String!
-  StartDate: DateTime!
   Psw: String!
   Enabled: Boolean!
+  StartDate: DateTime!
+  Deleted: Boolean!
   UserRoles: [UsersRolesEntity!]!
   Token: String!
 }
@@ -42,6 +43,8 @@ type PlayersEntity {
   CellPhone: String!
   Enabled: Boolean!
   IdCountry: Int!
+  Deleted: Boolean!
+  DateOfBirth: DateTime!
 }
 
 type CountriesEntity {
@@ -134,6 +137,7 @@ type Mutation {
   createUser(userInfo: UserInput!): UsersEntity!
   updateUser(userInfo: UserInput!): UsersEntity!
   deleteUser(IDs: [Int!]!): Float!
+  recoverUser(id: Int!): Float!
   createUsersRole(usersRolesInput: UsersRolesInput!): UsersRolesEntity!
   updateUsersRole(usersRolesInput: UsersRolesInput!): UsersRolesEntity!
   removeUsersRole(id: Int!): UsersRolesEntity!
@@ -143,6 +147,7 @@ type Mutation {
   createPlayer(playerInput: PlayerInput!): PlayersEntity!
   updatePlayer(playerInput: PlayerInput!): PlayersEntity!
   deletePlayer(IDs: [Int!]!): Float!
+  recoverPlayer(id: Int!): Float!
   createCountry(countryInput: CountryInput!): CountriesEntity!
   updateCountry(countryInput: CountryInput!): CountriesEntity!
   deleteCountry(IDs: [Int!]!): Float!
@@ -198,6 +203,7 @@ input PlayerInput {
   CellPhone: String!
   Enabled: Boolean!
   IdCountry: Int
+  DateOfBirth: DateTime!
 }
 
 input CountryInput {

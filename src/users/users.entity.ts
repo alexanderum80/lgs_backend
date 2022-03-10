@@ -20,10 +20,6 @@ export class UsersEntity {
     @Field()
     @Column()
     LastName: string;
-
-    @Field()
-    @Column()
-    StartDate: Date;
     
     @Field()
     @Column()
@@ -32,6 +28,14 @@ export class UsersEntity {
     @Field()
     @Column()
     Enabled: boolean
+    
+    @Field()
+    @Column()
+    StartDate: Date;
+
+    @Field()
+    @Column()
+    Deleted: boolean
 
     @Field(() => [UsersRolesEntity])
     @OneToMany(() => UsersRolesEntity, userRoles => userRoles.Users)

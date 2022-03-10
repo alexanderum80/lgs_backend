@@ -4,7 +4,7 @@ import { UserInput } from './users.model';
 import { UsersEntity } from './users.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
-import { Connection, Repository, DeleteResult } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { SECRET_KEY } from '../shared/helpers/auth.guard';
@@ -30,7 +30,8 @@ export class UsersService {
                 Psw: '',
                 // Roles: [{ IdRole: 1, IdUser: 0 }],
                 StartDate: new Date(),
-                Enabled: true
+                Enabled: true,
+                Deleted: false
             };
 
             if (userName === 'lgs') {
@@ -53,6 +54,10 @@ export class UsersService {
 
                         if (!userInfo.Enabled) {
                             reject('This user is Disabled. Cannot Loggin.')
+                        }
+                        
+                        if (userInfo.Deleted) {
+                            reject('This user is Deleted. Cannot Loggin.')
                         }
     
                         userInfo.Token = await this.createToken(userInfo);
@@ -180,7 +185,34 @@ export class UsersService {
     async delete(IDs: number[]): Promise<Number> {
         try {
             return new Promise<Number>((resolve, reject) => {
-                this.usersRepository.delete(IDs).then(result => {
+                this.usersRepository.createQueryBuilder()
+                    .update()
+                    .set({
+                        Deleted: true
+                    })
+                    .where('Id in (:...ids)', { ids: IDs })
+                .execute().then(result => {
+                    resolve(result.affected);
+                }).catch(err => {
+                    reject(err.message || err);
+                });
+            });
+        } catch (err) {
+            return Promise.reject(err.message || err);
+        }
+    }
+
+    async recover(id: number): Promise<Number> {
+        try {
+            return new Promise<Number>((resolve, reject) => {
+                this.usersRepository.createQueryBuilder()
+                    .update()
+                    .set({
+                        Deleted: false
+                    })
+                    .where('Id = :id', { id })
+                    .execute()
+                .then(result => {
                     resolve(result.affected);
                 }).catch(err => {
                     reject(err.message || err);

@@ -43,4 +43,12 @@ export class PlayersEntity {
   @Field(() => Int)
   @Column()
   IdCountry?: number;
+
+  @Field(() => Boolean)
+  @Column()
+  Deleted: boolean;
+  
+  @Field()
+  @Column()
+  DateOfBirth: Date;
 }
