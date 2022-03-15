@@ -104,6 +104,39 @@ type ChipsEntity {
   Image: String
 }
 
+type OperationsREntity {
+  IdOperationKey: Int!
+  IdUser: Int!
+  Date: DateTime
+  IdTable: Int!
+  Table: String
+  IdState: Int!
+  OperationsD: [OperationsDEntity!]
+  Amount: Float
+}
+
+type OperationsDEntity {
+  IdSerial: Int!
+  IdOperationKeyD: Int!
+  IdPayInstrument: Int!
+  IdDetail: Int!
+  Qty: Float!
+  OperationsR: OperationsREntity!
+}
+
+type PlatesEntity {
+  IdPlate: Int!
+  Value: Float!
+  IdCoin: Int!
+  Coin: CoinEntity!
+  Color: String!
+}
+
+type PaymentInstrumentsEntity {
+  IdPayInstr: Int!
+  Name: String!
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
@@ -131,6 +164,14 @@ type Query {
   getTable(id: Int!): TablesEntity!
   getChips: [ChipsEntity!]!
   getChip(id: Int!): ChipsEntity!
+  getOperations: [OperationsREntity!]!
+  getOperationsLatest(idState: Int!): [OperationsREntity!]!
+  getOperation(id: Int!): OperationsREntity!
+  getOperationDetails(id: Int!): [OperationsDEntity!]!
+  getPaymentInstruments: [PaymentInstrumentsEntity!]!
+  getPaymentInstrument(id: Int!): PaymentInstrumentsEntity!
+  getPlates: [PlatesEntity!]!
+  getPlate(id: Int!): PlatesEntity!
 }
 
 type Mutation {
@@ -170,6 +211,9 @@ type Mutation {
   createChip(chipInput: ChipInput!): ChipsEntity!
   updateChip(chipInput: ChipInput!): ChipsEntity!
   deleteChip(IDs: [Int!]!): ChipsEntity!
+  createOperation(operationInput: OperationInput!): OperationsREntity!
+  updateOperation(operationInput: OperationInput!): OperationsREntity!
+  deleteOperation(IDs: [Int!]!): Float!
 }
 
 input UserInput {
@@ -259,4 +303,23 @@ input ChipInput {
   Color: String!
   Value: Float!
   Image: String
+}
+
+input OperationInput {
+  OperationR: OperationRInput!
+  OperationD: [OperationDInput!]!
+}
+
+input OperationRInput {
+  IdOperationKey: Int
+  IdTable: Int!
+  IdState: Int!
+}
+
+input OperationDInput {
+  IdSerial: Int
+  IdOperationKeyD: Int!
+  IdPayInstrument: Int!
+  IdDetail: Int!
+  Qty: Float!
 }

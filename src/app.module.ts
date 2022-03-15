@@ -15,6 +15,9 @@ import { CitiesModule } from './cities/cities.module';
 import { TablesGameModule } from './tables-game/tables-game.module';
 import { TablesModule } from './tables/tables.module';
 import { ChipsModule } from './chips/chips.module';
+import { OperationsModule } from './operations/operations.module';
+import { PaymentInstrumentsModule } from './payment-instruments/payment-instruments.module';
+import { PlatesModule } from './plates/plates.module';
 import 'dotenv/config';
 
 @Module({
@@ -50,6 +53,9 @@ import 'dotenv/config';
     TablesGameModule,
     TablesModule,
     ChipsModule,
+    OperationsModule,
+    PaymentInstrumentsModule,
+    PlatesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
