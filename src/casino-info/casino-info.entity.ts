@@ -27,4 +27,8 @@ export class CasinoInfoEntity {
   @Field()
   @Column()
   IdCity: number;
+  
+  @Field()
+  @Column()
+  IdState: number;
 }

@@ -32,19 +32,53 @@ type UsersRolesEntity {
   Roles: RolesEntity!
 }
 
+type OperationsEntity {
+  IdOperation: Int!
+  OperationName: String!
+  Enabled: Boolean!
+}
+
+type OperationsREntity {
+  IdOperation: Int!
+  Consecutive: Int!
+  IdOperationType: Int!
+  IdTable: Int!
+  Table: String
+  IdPlayer: Int!
+  IdUser: Int!
+  Date: DateTime
+  Finished: Boolean
+  Cancelled: Boolean
+  OperationsD: [OperationsDEntity!]
+  Amount: Float
+}
+
+type OperationsDEntity {
+  IdOperationDetail: Int!
+  IdOperation: Int!
+  IdPayment: Int!
+  Denomination: Float!
+  IdInstrument: Int!
+  Rate: Float!
+  Qty: Float!
+  OperationsR: OperationsREntity!
+}
+
 type PlayersEntity {
   IdPlayer: Int!
   Name: String!
   LastName: String!
   StartDate: DateTime!
-  Personal_Id: String!
-  Passport_Number: String!
-  Note: String!
-  CellPhone: String!
+  Personal_Id: String
+  Passport_Number: String
+  Note: String
+  CellPhone: String
   Enabled: Boolean!
-  IdCountry: Int!
+  IdCountry: Int
   Deleted: Boolean!
-  DateOfBirth: DateTime!
+  DateOfBirth: DateTime
+  Status: Int!
+  StatusInfo: OperationsEntity!
 }
 
 type CountriesEntity {
@@ -73,6 +107,7 @@ type CasinoInfoEntity {
   Phone: String
   IdCountry: Float!
   IdCity: Float!
+  IdState: Float!
 }
 
 type CitiesEntity {
@@ -89,47 +124,61 @@ type TablesGameEntity {
   StartAmount: Float!
 }
 
+type PaymentsEntity {
+  IdPayment: Int!
+  Description: String!
+  Denomination: Float!
+  IdPayInstr: Int!
+  IdCoin: Int!
+  Coin: CoinEntity!
+  Enabled: Boolean!
+}
+
+type PaymentsView {
+  IdPayment: Float!
+  Description: String!
+  Denomination: Float!
+  IdPayInstr: Float!
+  IdCoin: Float!
+  Enabled: Boolean!
+  PayInstrument: String!
+  Coin: String!
+  Rate: Float!
+  PaymentName: String!
+}
+
 type TablesEntity {
   IdTable: Int!
   Description: String!
   IdGame: Int!
-  TableGame: TablesGameEntity!
   Enabled: Boolean!
+  TableGame: TablesGameEntity!
+  Game: String
+  InitValues: [TablesInitValuesEntity!]
+  TotalInitValues: Float
 }
 
-type ChipsEntity {
-  IdChip: Int!
-  Color: String!
-  Value: Float!
-  Image: String
-}
-
-type OperationsREntity {
-  IdOperationKey: Int!
-  IdUser: Int!
-  Date: DateTime
+type TablesInitValuesEntity {
+  IdInitValue: Int!
   IdTable: Int!
-  Table: String
-  IdState: Int!
-  OperationsD: [OperationsDEntity!]
-  Amount: Float
+  IdPayment: Int!
+  Payment: PaymentsEntity!
+  Qty: Int!
+  IdUser: Int!
+  Date: DateTime!
+  Table: TablesEntity!
 }
 
-type OperationsDEntity {
-  IdSerial: Int!
-  IdOperationKeyD: Int!
-  IdPayInstrument: Int!
-  IdDetail: Int!
-  Qty: Float!
-  OperationsR: OperationsREntity!
-}
-
-type PlatesEntity {
-  IdPlate: Int!
-  Value: Float!
-  IdCoin: Int!
-  Coin: CoinEntity!
-  Color: String!
+type CageEntity {
+  IdCageOp: Int!
+  IdTable: Int!
+  IdPlayer: Int!
+  IdOperationType: Int!
+  IdOperation: Int!
+  IdPayment: Int!
+  Date: DateTime!
+  IdUser: Int!
+  Amount: Float!
 }
 
 type PaymentInstrumentsEntity {
@@ -155,23 +204,26 @@ type Query {
   getLenders: [LendersEntity!]!
   getLender(id: Int!): LendersEntity!
   getCasinoInfo: CasinoInfoEntity!
+  getCasinoState: Int!
   getCities: [CitiesEntity!]!
   getCitiesByCountry(idCountry: Int!): [CitiesEntity!]!
   getCity(id: Int!): CitiesEntity!
   getTablesGame: [TablesGameEntity!]!
   getTableGame(id: Int!): TablesGameEntity!
   getTables: [TablesEntity!]!
+  getTablesWithInitValues: [TablesEntity!]!
+  getTableInitValues(idTable: Int!): [TablesInitValuesEntity!]!
   getTable(id: Int!): TablesEntity!
-  getChips: [ChipsEntity!]!
-  getChip(id: Int!): ChipsEntity!
   getOperations: [OperationsREntity!]!
-  getOperationsLatest(idState: Int!): [OperationsREntity!]!
+  getOperationsToday(idState: Int!): [OperationsREntity!]!
   getOperation(id: Int!): OperationsREntity!
   getOperationDetails(id: Int!): [OperationsDEntity!]!
+  getCages: [CageEntity!]!
+  getCage(id: Int!): CageEntity!
   getPaymentInstruments: [PaymentInstrumentsEntity!]!
   getPaymentInstrument(id: Int!): PaymentInstrumentsEntity!
-  getPlates: [PlatesEntity!]!
-  getPlate(id: Int!): PlatesEntity!
+  getPayments: [PaymentsView!]!
+  getPayment(id: Int!): PaymentsEntity!
 }
 
 type Mutation {
@@ -208,12 +260,15 @@ type Mutation {
   createTable(tableInput: TableInput!): TablesEntity!
   updateTable(tableInput: TableInput!): TablesEntity!
   deleteTable(IDs: [Int!]!): Float!
-  createChip(chipInput: ChipInput!): ChipsEntity!
-  updateChip(chipInput: ChipInput!): ChipsEntity!
-  deleteChip(IDs: [Int!]!): ChipsEntity!
   createOperation(operationInput: OperationInput!): OperationsREntity!
   updateOperation(operationInput: OperationInput!): OperationsREntity!
   deleteOperation(IDs: [Int!]!): Float!
+  finishInitialization: Boolean!
+  createCage(createCageInput: CageInput!): CageEntity!
+  removeCage(idOperation: Int!): Float!
+  createPayment(paymentInput: PaymentInput!): PaymentsEntity!
+  updatePayment(paymentInput: PaymentInput!): PaymentsEntity!
+  removePayment(IDs: [Int!]!): PaymentsEntity!
 }
 
 input UserInput {
@@ -292,17 +347,22 @@ input TableGameInput {
 }
 
 input TableInput {
+  Table: Table!
+  InitValues: [TablesInitValues!]!
+}
+
+input Table {
   IdTable: Int!
   Description: String!
   IdGame: Int!
   Enabled: Boolean!
 }
 
-input ChipInput {
-  IdChip: Int!
-  Color: String!
-  Value: Float!
-  Image: String
+input TablesInitValues {
+  IdInitValue: Int!
+  IdTable: Int!
+  IdPayment: Int!
+  Qty: Int!
 }
 
 input OperationInput {
@@ -311,15 +371,44 @@ input OperationInput {
 }
 
 input OperationRInput {
-  IdOperationKey: Int
+  IdOperation: Int
+  Consecutive: Int
+  IdOperationType: Int!
   IdTable: Int!
-  IdState: Int!
+  IdPlayer: Int!
+  IdUser: Int
+  Date: DateTime
+  Finished: Boolean
+  Cancelled: Boolean
 }
 
 input OperationDInput {
-  IdSerial: Int
-  IdOperationKeyD: Int!
-  IdPayInstrument: Int!
-  IdDetail: Int!
+  IdOperationDetail: Int
+  IdOperation: Int!
+  IdPayment: Int!
+  Denomination: Float!
+  IdInstrument: Int!
+  Rate: Float!
   Qty: Float!
+}
+
+input CageInput {
+  IdCageOp: Int
+  IdTable: Int!
+  IdPlayer: Int!
+  IdOperationType: Int!
+  IdOperation: Int!
+  IdPayment: Int!
+  Date: DateTime!
+  IdUser: Int!
+  Amount: Float!
+}
+
+input PaymentInput {
+  IdPayment: Int!
+  Description: String!
+  Denomination: Float!
+  IdPayInstr: Int!
+  IdCoin: Int!
+  Enabled: Boolean!
 }

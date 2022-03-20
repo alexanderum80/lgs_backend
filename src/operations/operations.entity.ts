@@ -1,13 +1,48 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, BeforeInsert, getManager, AfterInsert, AfterUpdate } from 'typeorm';
+
+@ObjectType()
+@Entity('LGS_Operations')
+export class OperationsEntity {
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  IdOperation: number;
+
+  @Field()
+  @Column()
+  OperationName: string;
+
+  @Field()
+  @Column()
+  Enabled: boolean;
+}
 
 @ObjectType()
 @Entity('LGS_Operation_LOGSR')
 export class OperationsREntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
-  IdOperationKey: number;
+  IdOperation?: number;
 
+  @Field(() => Int)
+  @Column()
+  Consecutive: number;
+
+  @Field(() => Int)
+  @Column()
+  IdOperationType: number;
+    
+  @Field(() => Int)
+  @Column()
+  IdTable: number;
+    
+  @Field({ nullable: true })
+  Table?: string;
+
+  @Field(() => Int)
+  @Column()
+  IdPlayer: number; 
+    
   @Field(() => Int)
   @Column()
   IdUser: number;
@@ -15,17 +50,14 @@ export class OperationsREntity {
   @Field(() => Date, { nullable: true })
   @Column()
   Date?: Date;
-    
-  @Field(() => Int)
-  @Column()
-  IdTable: number;
 
-  @Field({ nullable: true })
-  Table?: string;
-      
-  @Field(() => Int)
+  @Field(() => Boolean, { nullable: true })
   @Column()
-  IdState: number;
+  Finished?: boolean;
+  
+  @Field(() => Boolean, { nullable: true })
+  @Column()
+  Cancelled?: boolean;
 
   @Field(() => [OperationsDEntity], { nullable: true })
   @OneToMany(() => OperationsDEntity, operationD => operationD.OperationsR)
@@ -40,19 +72,27 @@ export class OperationsREntity {
 export class OperationsDEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
-  IdSerial: number;
+  IdOperationDetail?: number;
 
   @Field(() => Int)
   @Column()
-  IdOperationKeyD: number;
+  IdOperation: number;
 
   @Field(() => Int)
   @Column()
-  IdPayInstrument: number;
-
+  IdPayment: number;
+    
+  @Field()
+  @Column()
+  Denomination: number;
+  
   @Field(() => Int)
   @Column()
-  IdDetail: number;
+  IdInstrument: number;
+
+  @Field()
+  @Column()
+  Rate: number;
     
   @Field()
   @Column()
@@ -60,6 +100,6 @@ export class OperationsDEntity {
 
   @Field(() => OperationsREntity)
   @ManyToOne(() => OperationsREntity, operationR => operationR.OperationsD)
-  @JoinColumn({ name: 'IdOperationKeyD', referencedColumnName: 'IdOperationKey' })
+  @JoinColumn({ name: 'IdOperation', referencedColumnName: 'IdOperation' })
   OperationsR: OperationsREntity;
 }

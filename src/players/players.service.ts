@@ -13,7 +13,7 @@ export class PlayersService {
   async findAll(): Promise<PlayersEntity[]> {
     try {
       return new Promise<PlayersEntity[]>((resolve, reject) => {
-        this.playersRepository.find().then(result => {
+        this.playersRepository.find({ relations: ['StatusInfo']}).then(result => {
           resolve(result);
         }).catch(err => {
           reject(err.message || err);

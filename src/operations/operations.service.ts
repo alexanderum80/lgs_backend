@@ -1,17 +1,23 @@
-import { PlatesEntity } from './../plates/plates.entity';
-import { ChipsEntity } from './../chips/chips.entity';
+import { CageService } from './../cage/cage.service';
+import { CageEntity } from './../cage/cage.entity';
+import { CasinoInfoService } from './../casino-info/casino-info.service';
+import { PaymentsEntity } from './../payments/payments.entity';
+import { TablesService } from './../tables/tables.service';
 import { TablesEntity } from './../tables/tables.entity';
-import { OperationInput, EPaymentInstrument } from './operations.model';
+import { OperationInput, EPaymentInstrument, EOperations, OperationDInput, OperationRInput } from './operations.model';
 import { Injectable } from '@nestjs/common';
 import { OperationsREntity, OperationsDEntity } from './operations.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getManager } from 'typeorm';
 
 @Injectable()
 export class OperationsService {
   constructor(
     @InjectRepository(OperationsREntity) private readonly operationRRepository: Repository<OperationsREntity>,
-    @InjectRepository(OperationsDEntity) private readonly operationDRepository: Repository<OperationsDEntity>
+    @InjectRepository(OperationsDEntity) private readonly operationDRepository: Repository<OperationsDEntity>,
+    private _tablesSvc: TablesService,
+    private _casinoInfoSvc: CasinoInfoService,
+    private _cageSvc: CageService
   ) {}
 
   async findAll(): Promise<OperationsREntity[]> {
@@ -28,33 +34,34 @@ export class OperationsService {
     }  
   }
 
-  async findAllLatest(idState): Promise<OperationsREntity[]> {
+  async findAllToday(idOperationType: number): Promise<OperationsREntity[]> {
     try {
       const today = new Date(new Date(Date.now()).setHours(0, 0, 0, 0));
 
       return new Promise<OperationsREntity[]>((resolve, reject) => {
-        this.operationRRepository.createQueryBuilder('r')
-          .select('r.IdOperationKey', 'IdOperationKey')
-          .addSelect('r.IdUser', 'IdUser')
-          .addSelect('r.Date', 'Date')
-          .addSelect('r.IdTable', 'IdTable')
-          .addSelect('r.IdState', 'IdState')
-          .addSelect(`COALESCE(t.Description, 'CAGE')`, 'Table')
-          .addSelect(`SUM(CASE WHEN d.IdPayInstrument = ${ EPaymentInstrument.CHIPS } THEN d.Qty * c.Value WHEN d.IdPayInstrument = ${ EPaymentInstrument.PLATES } THEN d.Qty * p.Value ELSE d.Qty * d.IdDetail END)`, 'Amount')
-          .innerJoin(OperationsDEntity, 'd', 'r.IdOperationKey = d.IdOperationKeyD')
-          .leftJoin(TablesEntity, 't', 't.IdTable = r.IdTable')
-          .leftJoin(ChipsEntity, 'c', 'c.IdChip = d.IdDetail')
-          .leftJoin(PlatesEntity, 'p', 'p.IdPlate = d.IdDetail')
-          .groupBy('r.IdOperationKey')
-          .addGroupBy('r.IdUser')
-          .addGroupBy('r.Date')
-          .addGroupBy('r.IdTable')
-          .addGroupBy('r.IdState')
-          .addGroupBy('t.Description')
-          // .addGroupBy('d.IdPayInstrument')
-          .where('r.Date >= :date', { date: today.toDateString() })
-          .andWhere('r.IdState = :state', { state: idState })
-        .execute().then(result => {
+        getManager().query(`select * from "vw_OperationsR" where "IdOperationType" = ${ idOperationType} and "Date" >= '${ today.toDateString() }'`).then(result => {
+        // this.operationRRepository.createQueryBuilder('r')
+        //   .select('r.IdOperation', 'IdOperation')
+        //   .addSelect('r.IdUser', 'IdUser')
+        //   .addSelect('r.Date', 'Date')
+        //   .addSelect('r.IdTable', 'IdTable')
+        //   .addSelect('r.Finished', 'Finished')
+        //   .addSelect('r.Cancelled', 'Cancelled')
+        //   .addSelect(`t.Description`, 'Table')
+        //   .addSelect(`SUM(d.Denomination * d.Qty * d.Rate)`, 'Amount')
+        //   .innerJoin(OperationsDEntity, 'd', 'r.IdOperation = d.IdOperation')
+        //   .innerJoin(TablesEntity, 't', 't.IdTable = r.IdTable')
+        //   .leftJoin(PaymentsEntity, 'p', 'p.IdPayment = d.IdPayment')
+        //   .groupBy('r.IdOperation')
+        //   .addGroupBy('r.IdUser')
+        //   .addGroupBy('r.Date')
+        //   .addGroupBy('r.IdTable')
+        //   .addGroupBy('r.Finished')
+        //   .addGroupBy('r.Cancelled')
+        //   .addGroupBy('t.Description')
+        //   .where('r.Date >= :date', { date: today.toDateString() })
+        //   .andWhere('r.IdOperationType = :operType', { operType: idOperationType })
+        // .execute().then(result => {
             resolve(result);
         }).catch(err => {
             reject(err.message || err);
@@ -82,7 +89,7 @@ export class OperationsService {
   async findDetails(id: number): Promise<OperationsDEntity[]> {
     try {
       return new Promise<OperationsDEntity[]>((resolve, reject) => {
-        this.operationDRepository.find({ IdOperationKeyD: id }).then(result => {
+        this.operationDRepository.find({ IdOperation: id }).then(result => {
             resolve(result);
         }).catch(err => {
             reject(err.message || err);
@@ -95,7 +102,9 @@ export class OperationsService {
 
   async create(user: number, operationInput: OperationInput): Promise<OperationsREntity> {
     try {
-      delete operationInput.OperationR.IdOperationKey;
+      delete operationInput.OperationR.IdOperation;
+
+      operationInput.OperationR.Consecutive = await this.getInstrumentConsecutive(operationInput.OperationR.IdOperationType);
 
       operationInput.OperationR['Date'] = new Date();
       operationInput.OperationR['IdUser'] = user;
@@ -103,7 +112,7 @@ export class OperationsService {
       return new Promise<OperationsREntity>((resolve, reject) => {
         this.operationRRepository.save(operationInput.OperationR).then(result => {
           operationInput.OperationD.map(d => {
-            d.IdOperationKeyD = result.IdOperationKey
+            d.IdOperation = result.IdOperation
           });
           this.operationDRepository.save(operationInput.OperationD).then(() => {
             resolve(result);
@@ -126,7 +135,7 @@ export class OperationsService {
       
       return new Promise<OperationsREntity>((resolve, reject) => {
         this.operationRRepository.save(operationInput.OperationR).then(result => {
-          this.operationDRepository.delete({ IdOperationKeyD: operationInput.OperationR.IdOperationKey}).then(() => {
+          this.operationDRepository.delete({ IdOperation: operationInput.OperationR.IdOperation }).then(() => {
             this.operationDRepository.save(operationInput.OperationD).then(() => {
               resolve(result);
             }).catch(err => {
@@ -156,5 +165,105 @@ export class OperationsService {
     } catch (err) {
       return Promise.reject(err.message || err);
     }    
+  }
+  
+  async finishInitialization(user: number): Promise<boolean> {
+    try {
+      const manager = getManager();
+
+      let operationR: OperationRInput;
+      
+      const tables = await this._tablesSvc.findAll();
+
+      return new Promise<boolean>(async (resolve, reject) => {
+        for (let index = 0; index < tables.length; index++) {
+          const t = tables[index];
+ 
+          operationR = {
+            IdTable: t.IdTable,
+            IdPlayer: 0,
+            IdOperationType: EOperations.INITIALIZING,
+            Consecutive: await this.getInstrumentConsecutive(EOperations.INITIALIZING),
+            IdUser: user,
+            Finished: true,
+            Date: new Date()
+          };
+
+          await this.operationRRepository.save(operationR).then(async result => {
+            const operationD: OperationDInput[] = [];
+
+            t.InitValues.map(i => {
+              operationD.push({
+                IdOperation: result.IdOperation,
+                IdPayment: i.IdPayment,
+                IdInstrument: EPaymentInstrument.CHIPS,
+                Denomination: i.Payment.Denomination,
+                Rate: i.Payment.Coin.Rate,
+                Qty: i.Qty,
+              });
+            });
+
+            await this.operationDRepository.save(operationD).catch(err => {
+              reject(err.message || err);
+            });
+          }).catch(err => {
+            reject(err.message || err);
+          })
+        };
+
+        const operations = await this.findAllToday(EOperations.INITIALIZING);
+        
+        operations.forEach(async op => {
+          await this._insertOperationInCage(op).catch(err => {
+            reject(err.message || err);
+          });
+        });
+
+        await this._casinoInfoSvc.updateCasinoState(EOperations.OPEN).then(() => {
+          resolve(true);
+        }).catch(err => {
+          reject(err.message || err);
+        });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }    
+  }
+
+  async getInstrumentConsecutive(idOperation: number): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      const today = new Date(new Date(Date.now()).setHours(0, 0, 0, 0));
+
+      getManager().query(`SELECT fn_lgs_getopnumber(${ idOperation }, '${ today.toDateString() }');`).then(res => {
+        resolve(res[0].fn_lgs_getopnumber || 1);
+      }).catch(err => {
+          reject(err.message || err);
+      });
+    });
+  }
+  
+  private async _insertOperationInCage(op: OperationRInput): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      const opDetail = await this.findDetails(op.IdOperation);
+
+      opDetail.forEach(async d => {
+        const cage: CageEntity = new CageEntity();
+
+        cage.IdTable = op.IdTable,
+        cage.IdPlayer = op.IdPlayer,
+        cage.IdOperationType = op.IdOperationType,
+        cage.IdOperation = op.IdOperation,
+        cage.IdPayment = d.IdPayment,
+        cage.Date = op.Date,
+        cage.IdUser = op.IdUser,
+        cage.Amount = d.Denomination * d.Qty * d.Rate
+
+        await this._cageSvc.create(cage).catch(err => {
+          reject(err.message || err);
+        });
+      });
+
+      resolve(true);
+    });
   }
 }

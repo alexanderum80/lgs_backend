@@ -3,28 +3,52 @@ import { InputType, Int, Field } from '@nestjs/graphql';
 @InputType()
 export class OperationRInput {
   @Field(() => Int, { nullable: true })
-  IdOperationKey?: number;
+  IdOperation?: number;
+    
+  @Field(() => Int, { nullable: true })
+  Consecutive?: number;
+
+  @Field(() => Int)
+  IdOperationType: number;
     
   @Field(() => Int)
   IdTable: number;
 
   @Field(() => Int)
-  IdState: number;
+  IdPlayer: number;
+
+  @Field(() => Int, { nullable: true })
+  IdUser?: number;
+    
+  @Field(() => Date, { nullable: true })
+  Date?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  Finished?: boolean;
+  
+  @Field(() => Boolean, { nullable: true })
+  Cancelled?: boolean;
 }
 
 @InputType()
 export class OperationDInput {
   @Field(() => Int, { nullable: true })
-  IdSerial?: number;
+  IdOperationDetail?: number;
 
   @Field(() => Int)
-  IdOperationKeyD: number;
+  IdOperation: number;
 
   @Field(() => Int)
-  IdPayInstrument: number;
+  IdPayment: number;
+    
+  @Field()
+  Denomination: number;
   
   @Field(() => Int)
-  IdDetail: number;
+  IdInstrument: number;
+
+  @Field()
+  Rate: number;
     
   @Field()
   Qty: number;
@@ -42,5 +66,19 @@ export class OperationInput {
 export enum EPaymentInstrument {
   'CHIPS' = 1,
   'PLATES' = 2,
-  'CASH' = 3
+  'CASH' = 3,
+  'BONUS' = 4
+}
+
+export enum EOperations {
+  'INITIALIZING' = 1,
+  'DEPOSIT' = 2,
+  'EXTRACTION' = 3,
+  'CHECK' = 4,
+  'DROP' = 5,
+  'CLOSED' = 6,
+  'REFUND' = 7,
+  'PLAYER-IN' = 8,
+  'PLAYER-OUT' = 9,
+  'OPEN' = 10
 }

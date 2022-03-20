@@ -15,11 +15,11 @@ export class OperationsResolver {
     return this.operationsService.findAll();
   }
 
-  @Query(() => [OperationsREntity], { name: 'getOperationsLatest' })
-  async findLatest(
+  @Query(() => [OperationsREntity], { name: 'getOperationsToday' })
+  async findToday(
     @Args('idState', { type: () => Int }) idState: number 
   ): Promise<OperationsREntity[]> {
-    return this.operationsService.findAllLatest(idState);
+    return this.operationsService.findAllToday(idState);
   }
 
   @Query(() => OperationsREntity, { name: 'getOperation' })
@@ -53,5 +53,13 @@ export class OperationsResolver {
   @Mutation(() => Number)
   async deleteOperation(@Args('IDs', { type: () => [Int] }) IDs: number[]): Promise<number> {
     return this.operationsService.delete(IDs);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(new AuthGuard())
+  async finishInitialization(
+    @Context(DEFAULT_GRAPHQL_CONTEXT) user: UsersEntity,
+  ): Promise<boolean> {
+    return this.operationsService.finishInitialization(user.Id);
   }
 }

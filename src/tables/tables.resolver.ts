@@ -1,7 +1,10 @@
+import { UsersEntity } from './../users/users.entity';
+import { AuthGuard, DEFAULT_GRAPHQL_CONTEXT } from './../shared/helpers/auth.guard';
+import { UseGuards } from '@nestjs/common';
 import { TableInput } from './tables.models';
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { TablesService } from './tables.service';
-import { TablesEntity } from './tables.entity';
+import { TablesEntity, TablesInitValuesEntity } from './tables.entity';
 
 @Resolver(() => TablesEntity)
 export class TablesResolver {
@@ -12,19 +15,37 @@ export class TablesResolver {
     return this.tablesService.findAll();
   }
 
+  @Query(() => [TablesEntity], { name: 'getTablesWithInitValues' })
+  async findAllWithInitValues(): Promise<TablesEntity[]> {
+    return this.tablesService.findAllWithInitValues();
+  }
+
+  @Query(() => [TablesInitValuesEntity], { name: 'getTableInitValues' })
+  async findInitialValues(@Args({ name: 'idTable', type: () => Int }) idTable: number): Promise<TablesInitValuesEntity[]> {
+    return this.tablesService.findInitialValues(idTable);
+  }
+
   @Query(() => TablesEntity, { name: 'getTable' })
   async findOne(@Args('id', { type: () => Int }) id: number): Promise<TablesEntity> {
     return this.tablesService.findOne(id);
   }
 
   @Mutation(() => TablesEntity)
-  async createTable(@Args('tableInput') tableInput: TableInput): Promise<TablesEntity> {
-    return this.tablesService.create(tableInput);
+  @UseGuards(new AuthGuard())
+  async createTable(
+    @Context(DEFAULT_GRAPHQL_CONTEXT) user: UsersEntity,
+    @Args('tableInput') tableInput: TableInput
+  ): Promise<TablesEntity> {
+    return this.tablesService.create(user, tableInput);
   }
   
   @Mutation(() => TablesEntity)
-  async updateTable(@Args('tableInput') tableInput: TableInput): Promise<TablesEntity> {
-    return this.tablesService.update(tableInput);
+  @UseGuards(new AuthGuard())
+  async updateTable(
+    @Context(DEFAULT_GRAPHQL_CONTEXT) user: UsersEntity,
+    @Args('tableInput') tableInput: TableInput
+  ): Promise<TablesEntity> {
+    return this.tablesService.update(user, tableInput);
   }
 
   @Mutation(() => Number)

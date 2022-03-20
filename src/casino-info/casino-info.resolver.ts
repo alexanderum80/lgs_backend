@@ -12,6 +12,11 @@ export class CasinoInfoResolver {
     return this.casinoInfoService.find();
   }
 
+  @Query(() => Int, { name: 'getCasinoState' })
+  async findCasinoState(): Promise<number> {
+    return this.casinoInfoService.findCasinoState();
+  }
+
   @Mutation(() => CasinoInfoEntity)
   async saveCasinoInfo(@Args('casinoInfoInput') casinoInfoInput: CasinoInfoInput): Promise<CasinoInfoEntity> {
     return this.casinoInfoService.save(casinoInfoInput);

@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { OperationsEntity } from 'src/operations/operations.entity';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @ObjectType()
 @Entity('LGS_Player')
@@ -20,19 +21,19 @@ export class PlayersEntity {
   @Column()
   StartDate?: Date;
   
-  @Field()
+  @Field({ nullable: true })
   @Column()
-  Personal_Id: string;
+  Personal_Id?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   Passport_Number?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   Note?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @Column()
   CellPhone?: string;
 
@@ -40,7 +41,7 @@ export class PlayersEntity {
   @Column()
   Enabled: boolean;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @Column()
   IdCountry?: number;
 
@@ -48,7 +49,16 @@ export class PlayersEntity {
   @Column()
   Deleted: boolean;
   
-  @Field()
+  @Field({ nullable: true })
   @Column()
-  DateOfBirth: Date;
+  DateOfBirth?: Date;
+
+  @Field(() => Int)
+  @Column()
+  Status: number;
+
+  @Field(() => OperationsEntity)
+  @ManyToOne(() => OperationsEntity, operations => operations.IdOperation)
+  @JoinColumn({ name: 'Status', referencedColumnName: 'IdOperation'})
+  StatusInfo: OperationsEntity;
 }

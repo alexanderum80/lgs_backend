@@ -1,3 +1,4 @@
+import { AppGateway } from './app.gateway';
 import { usersModule } from './users/users.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -14,10 +15,10 @@ import { CasinoInfoModule } from './casino-info/casino-info.module';
 import { CitiesModule } from './cities/cities.module';
 import { TablesGameModule } from './tables-game/tables-game.module';
 import { TablesModule } from './tables/tables.module';
-import { ChipsModule } from './chips/chips.module';
 import { OperationsModule } from './operations/operations.module';
 import { PaymentInstrumentsModule } from './payment-instruments/payment-instruments.module';
-import { PlatesModule } from './plates/plates.module';
+import { CageModule } from './cage/cage.module';
+import { PaymentsModule } from './payments/payments.module';
 import 'dotenv/config';
 
 @Module({
@@ -52,12 +53,12 @@ import 'dotenv/config';
     CitiesModule,
     TablesGameModule,
     TablesModule,
-    ChipsModule,
     OperationsModule,
     PaymentInstrumentsModule,
-    PlatesModule,
+    CageModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppGateway],
 })
 export class AppModule {}
