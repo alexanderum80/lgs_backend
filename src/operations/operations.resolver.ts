@@ -3,7 +3,7 @@ import { AuthGuard, DEFAULT_GRAPHQL_CONTEXT } from './../shared/helpers/auth.gua
 import { OperationInput } from './operations.model';
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { OperationsService } from './operations.service';
-import { OperationsREntity, OperationsDEntity } from './operations.entity';
+import { OperationsREntity, OperationsDEntity, OperationsRView } from './operations.entity';
 import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => OperationsREntity)
@@ -15,10 +15,10 @@ export class OperationsResolver {
     return this.operationsService.findAll();
   }
 
-  @Query(() => [OperationsREntity], { name: 'getOperationsToday' })
+  @Query(() => [OperationsRView], { name: 'getOperationsToday' })
   async findToday(
     @Args('idState', { type: () => Int }) idState: number 
-  ): Promise<OperationsREntity[]> {
+  ): Promise<OperationsRView[]> {
     return this.operationsService.findAllToday(idState);
   }
 
@@ -48,6 +48,22 @@ export class OperationsResolver {
     @Args('operationInput') operationInput: OperationInput
   ): Promise<OperationsREntity> {
     return this.operationsService.update(user.Id, operationInput);
+  }
+
+  @Mutation(() => Int)
+  @UseGuards(new AuthGuard())
+  async finishOperation(
+    @Args({ name: 'idOperation', type: () => Int }) idOperation: number
+  ): Promise<number> {
+    return this.operationsService.finishOperation(idOperation);
+  }
+
+  @Mutation(() => Int)
+  @UseGuards(new AuthGuard())
+  async cancelOperation(
+    @Args({ name: 'idOperation', type: () => Int }) idOperation: number
+  ): Promise<number> {
+    return this.operationsService.cancelOperation(idOperation);
   }
 
   @Mutation(() => Number)

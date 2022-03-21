@@ -31,4 +31,8 @@ export class CasinoInfoEntity {
   @Field()
   @Column()
   IdState: number;
+    
+  @Field()
+  @Column()
+  OpeningDate: Date;
 }

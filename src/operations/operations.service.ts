@@ -6,7 +6,7 @@ import { TablesService } from './../tables/tables.service';
 import { TablesEntity } from './../tables/tables.entity';
 import { OperationInput, EPaymentInstrument, EOperations, OperationDInput, OperationRInput } from './operations.model';
 import { Injectable } from '@nestjs/common';
-import { OperationsREntity, OperationsDEntity } from './operations.entity';
+import { OperationsREntity, OperationsDEntity, OperationsRView } from './operations.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getManager } from 'typeorm';
 
@@ -34,11 +34,13 @@ export class OperationsService {
     }  
   }
 
-  async findAllToday(idOperationType: number): Promise<OperationsREntity[]> {
+  async findAllToday(idOperationType: number): Promise<OperationsRView[]> {
     try {
-      const today = new Date(new Date(Date.now()).setHours(0, 0, 0, 0));
+      const today = await this._casinoInfoSvc.findCasinoOpeningDate().catch(err => {
+        throw new Error(err.message || err);
+      });
 
-      return new Promise<OperationsREntity[]>((resolve, reject) => {
+      return new Promise<OperationsRView[]>((resolve, reject) => {
         getManager().query(`select * from "vw_OperationsR" where "IdOperationType" = ${ idOperationType} and "Date" >= '${ today.toDateString() }'`).then(result => {
         // this.operationRRepository.createQueryBuilder('r')
         //   .select('r.IdOperation', 'IdOperation')
@@ -135,6 +137,9 @@ export class OperationsService {
       
       return new Promise<OperationsREntity>((resolve, reject) => {
         this.operationRRepository.save(operationInput.OperationR).then(result => {
+          operationInput.OperationD.map(d => {
+            d.IdOperation = result.IdOperation;
+          })
           this.operationDRepository.delete({ IdOperation: operationInput.OperationR.IdOperation }).then(() => {
             this.operationDRepository.save(operationInput.OperationD).then(() => {
               resolve(result);
@@ -146,6 +151,42 @@ export class OperationsService {
           })
         }).catch(err => {
             reject(err.message || err);
+        });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }    
+  }
+
+  async finishOperation(idOperation: number): Promise<number> {
+    try {
+      return new Promise<number>((resolve, reject) => {
+        this.operationRRepository.update({ IdOperation: idOperation}, { Finished: true }, ).then(result => {
+          this._insertOperationInCage(idOperation).then(() => {
+            resolve(result.affected);
+          }).catch(err => {
+            reject(err.message || err);
+          });
+        }).catch(err => {
+          reject(err.message || err);
+        });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }    
+  }
+
+  async cancelOperation(idOperation: number): Promise<number> {
+    try {
+      return new Promise<number>((resolve, reject) => {
+        this.operationRRepository.update({ IdOperation: idOperation}, { Cancelled: true }, ).then(result => {
+          this._cageSvc.remove(idOperation).then(() => {
+            resolve(result.affected);
+          }).catch(err => {
+            reject(err.message || err);
+          });
+        }).catch(err => {
+          reject(err.message || err);
         });
       });
     } catch (err) {
@@ -214,7 +255,7 @@ export class OperationsService {
         const operations = await this.findAllToday(EOperations.INITIALIZING);
         
         operations.forEach(async op => {
-          await this._insertOperationInCage(op).catch(err => {
+          await this._insertOperationInCage(op.IdOperation).catch(err => {
             reject(err.message || err);
           });
         });
@@ -231,39 +272,43 @@ export class OperationsService {
   }
 
   async getInstrumentConsecutive(idOperation: number): Promise<number> {
-    return new Promise<number>((resolve, reject) => {
-      const today = new Date(new Date(Date.now()).setHours(0, 0, 0, 0));
+    return new Promise<number>(async (resolve, reject) => {
 
-      getManager().query(`SELECT fn_lgs_getopnumber(${ idOperation }, '${ today.toDateString() }');`).then(res => {
+      getManager().query(`SELECT fn_lgs_getopnumber(${ idOperation });`).then(res => {
         resolve(res[0].fn_lgs_getopnumber || 1);
       }).catch(err => {
-          reject(err.message || err);
+        reject(err.message || err);
       });
     });
   }
   
-  private async _insertOperationInCage(op: OperationRInput): Promise<boolean> {
+  private async _insertOperationInCage(idOperation: number): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
-      const opDetail = await this.findDetails(op.IdOperation);
+    
+      getManager().query(`CALL public.sp_lgs_insert_cage(${ idOperation })`).then(result => {
+        resolve(result);
+      // this.findOne(idOperation).then(op => {
+      //   op.OperationsD.forEach(async d => {
+      //     const cage: CageEntity = new CageEntity();
 
-      opDetail.forEach(async d => {
-        const cage: CageEntity = new CageEntity();
+      //     cage.IdTable = op.IdTable,
+      //     cage.IdPlayer = op.IdPlayer,
+      //     cage.IdOperationType = op.IdOperationType,
+      //     cage.IdOperation = op.IdOperation,
+      //     cage.IdPayment = d.IdPayment,
+      //     cage.Date = op.Date,
+      //     cage.IdUser = op.IdUser,
+      //     cage.Amount = d.Denomination * d.Qty
 
-        cage.IdTable = op.IdTable,
-        cage.IdPlayer = op.IdPlayer,
-        cage.IdOperationType = op.IdOperationType,
-        cage.IdOperation = op.IdOperation,
-        cage.IdPayment = d.IdPayment,
-        cage.Date = op.Date,
-        cage.IdUser = op.IdUser,
-        cage.Amount = d.Denomination * d.Qty * d.Rate
+      //     await this._cageSvc.create(cage).catch(err => {
+      //       reject(err.message || err);
+      //     });
+      //   });
 
-        await this._cageSvc.create(cage).catch(err => {
-          reject(err.message || err);
-        });
+      //   resolve(true);
+      }).catch(err => {
+        reject(err.message || err);
       });
-
-      resolve(true);
     });
   }
 }

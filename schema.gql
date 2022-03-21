@@ -43,14 +43,12 @@ type OperationsREntity {
   Consecutive: Int!
   IdOperationType: Int!
   IdTable: Int!
-  Table: String
   IdPlayer: Int!
   IdUser: Int!
   Date: DateTime
   Finished: Boolean
   Cancelled: Boolean
   OperationsD: [OperationsDEntity!]
-  Amount: Float
 }
 
 type OperationsDEntity {
@@ -62,6 +60,23 @@ type OperationsDEntity {
   Rate: Float!
   Qty: Float!
   OperationsR: OperationsREntity!
+}
+
+type OperationsRView {
+  IdOperation: Float!
+  Consecutive: Float!
+  IdOperationType: Float!
+  IdTable: Float!
+  Table: String!
+  UserName: String!
+  Player: String!
+  IdPlayer: Float!
+  IdUser: Float!
+  Date: DateTime!
+  Finished: Boolean!
+  Cancelled: Boolean!
+  AmountIn: Float!
+  AmountOut: Float!
 }
 
 type PlayersEntity {
@@ -108,6 +123,7 @@ type CasinoInfoEntity {
   IdCountry: Float!
   IdCity: Float!
   IdState: Float!
+  OpeningDate: DateTime!
 }
 
 type CitiesEntity {
@@ -215,7 +231,7 @@ type Query {
   getTableInitValues(idTable: Int!): [TablesInitValuesEntity!]!
   getTable(id: Int!): TablesEntity!
   getOperations: [OperationsREntity!]!
-  getOperationsToday(idState: Int!): [OperationsREntity!]!
+  getOperationsToday(idState: Int!): [OperationsRView!]!
   getOperation(id: Int!): OperationsREntity!
   getOperationDetails(id: Int!): [OperationsDEntity!]!
   getCages: [CageEntity!]!
@@ -262,6 +278,8 @@ type Mutation {
   deleteTable(IDs: [Int!]!): Float!
   createOperation(operationInput: OperationInput!): OperationsREntity!
   updateOperation(operationInput: OperationInput!): OperationsREntity!
+  finishOperation(idOperation: Int!): Int!
+  cancelOperation(idOperation: Int!): Int!
   deleteOperation(IDs: [Int!]!): Float!
   finishInitialization: Boolean!
   createCage(createCageInput: CageInput!): CageEntity!

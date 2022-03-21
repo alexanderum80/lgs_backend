@@ -1,5 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, BeforeInsert, getManager, AfterInsert, AfterUpdate } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, BeforeInsert, getManager, AfterInsert, AfterUpdate, ViewEntity, ViewColumn } from 'typeorm';
 
 @ObjectType()
 @Entity('LGS_Operations')
@@ -35,9 +35,6 @@ export class OperationsREntity {
   @Field(() => Int)
   @Column()
   IdTable: number;
-    
-  @Field({ nullable: true })
-  Table?: string;
 
   @Field(() => Int)
   @Column()
@@ -62,9 +59,6 @@ export class OperationsREntity {
   @Field(() => [OperationsDEntity], { nullable: true })
   @OneToMany(() => OperationsDEntity, operationD => operationD.OperationsR)
   OperationsD?: OperationsDEntity[];
-
-  @Field({ nullable: true })
-  Amount?: number;
 }
 
 @ObjectType()
@@ -102,4 +96,64 @@ export class OperationsDEntity {
   @ManyToOne(() => OperationsREntity, operationR => operationR.OperationsD)
   @JoinColumn({ name: 'IdOperation', referencedColumnName: 'IdOperation' })
   OperationsR: OperationsREntity;
+}
+
+@ObjectType()
+@ViewEntity('vw_OperationsR')
+export class OperationsRView {
+  @Field()
+  @ViewColumn()
+  IdOperation?: number;
+
+  @Field()
+  @ViewColumn()
+  Consecutive: number;
+
+  @Field()
+  @ViewColumn()
+  IdOperationType: number;
+    
+  @Field()
+  @ViewColumn()
+  IdTable: number;
+    
+  @Field()
+  @ViewColumn()
+  Table?: string;
+
+  @Field()
+  @ViewColumn()
+  UserName?: string;
+
+  @Field()
+  @ViewColumn()
+  Player?: string;
+
+  @Field()
+  @ViewColumn()
+  IdPlayer: number; 
+    
+  @Field()
+  @ViewColumn()
+  IdUser: number;
+    
+  @Field()
+  @ViewColumn()
+  Date?: Date;
+
+  @Field()
+  @ViewColumn()
+  Finished?: boolean;
+  
+  @Field()
+  @ViewColumn()
+  Cancelled?: boolean;
+
+  @Field()
+  @ViewColumn()
+  AmountIn?: number;
+  
+  @Field()
+  @ViewColumn()
+  AmountOut?: number;
 }

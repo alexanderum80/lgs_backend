@@ -37,6 +37,20 @@ export class CasinoInfoService {
       return Promise.reject(err.message || err);
     }   
   }
+
+  async findCasinoOpeningDate(): Promise<Date> {
+    try {
+      return new Promise<Date>((resolve, reject) => {
+         this.casinoRepository.findOne().then(result => {
+             resolve(result.OpeningDate);
+         }).catch(err => {
+             reject(err.message || err);
+         });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }   
+  }
   
   async save(casinoInfoInput: CasinoInfoInput): Promise<CasinoInfoEntity> {
     try {
@@ -57,7 +71,7 @@ export class CasinoInfoService {
       return new Promise<number>((resolve, reject) => {
          this.casinoRepository.createQueryBuilder()
           .update()
-          .set({ IdState: idState })
+          .set({ IdState: idState, OpeningDate: new Date() })
         .execute()
         .then(result => {
              resolve(result.affected);
