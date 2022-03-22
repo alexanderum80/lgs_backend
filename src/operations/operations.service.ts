@@ -210,8 +210,6 @@ export class OperationsService {
   
   async finishInitialization(user: number): Promise<boolean> {
     try {
-      const manager = getManager();
-
       let operationR: OperationRInput;
       
       const tables = await this._tablesSvc.findAll();
@@ -252,15 +250,25 @@ export class OperationsService {
           })
         };
 
+        const operationDate = new Date();
+
         const operations = await this.findAllToday(EOperations.INITIALIZING);
         
-        operations.forEach(async op => {
-          await this._insertOperationInCage(op.IdOperation).catch(err => {
+        operations.forEach(async o => {
+          await getManager().getRepository(OperationsREntity).createQueryBuilder()
+            .update()
+            .set({ Date: operationDate, Finished: true })
+            .where('IdOperation = :idOperation', { idOperation: o.IdOperation})
+          .execute().then(async res => {
+            await this._insertOperationInCage(o.IdOperation).catch(err => {
+              reject(err.message || err);
+            });
+          }).catch(err => {
             reject(err.message || err);
-          });
+          })
         });
 
-        await this._casinoInfoSvc.updateCasinoState(EOperations.OPEN).then(() => {
+        await this._casinoInfoSvc.updateCasinoState(EOperations.OPEN, operationDate).then(() => {
           resolve(true);
         }).catch(err => {
           reject(err.message || err);
@@ -273,7 +281,6 @@ export class OperationsService {
 
   async getInstrumentConsecutive(idOperation: number): Promise<number> {
     return new Promise<number>(async (resolve, reject) => {
-
       getManager().query(`SELECT fn_lgs_getopnumber(${ idOperation });`).then(res => {
         resolve(res[0].fn_lgs_getopnumber || 1);
       }).catch(err => {
@@ -284,28 +291,8 @@ export class OperationsService {
   
   private async _insertOperationInCage(idOperation: number): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
-    
       getManager().query(`CALL public.sp_lgs_insert_cage(${ idOperation })`).then(result => {
         resolve(result);
-      // this.findOne(idOperation).then(op => {
-      //   op.OperationsD.forEach(async d => {
-      //     const cage: CageEntity = new CageEntity();
-
-      //     cage.IdTable = op.IdTable,
-      //     cage.IdPlayer = op.IdPlayer,
-      //     cage.IdOperationType = op.IdOperationType,
-      //     cage.IdOperation = op.IdOperation,
-      //     cage.IdPayment = d.IdPayment,
-      //     cage.Date = op.Date,
-      //     cage.IdUser = op.IdUser,
-      //     cage.Amount = d.Denomination * d.Qty
-
-      //     await this._cageSvc.create(cage).catch(err => {
-      //       reject(err.message || err);
-      //     });
-      //   });
-
-      //   resolve(true);
       }).catch(err => {
         reject(err.message || err);
       });

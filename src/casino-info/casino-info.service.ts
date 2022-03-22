@@ -66,12 +66,12 @@ export class CasinoInfoService {
     }   
   }
 
-  async updateCasinoState(idState: number): Promise<number> {
+  async updateCasinoState(idState: number, openingDate: Date): Promise<number> {
     try {
       return new Promise<number>((resolve, reject) => {
          this.casinoRepository.createQueryBuilder()
           .update()
-          .set({ IdState: idState, OpeningDate: new Date() })
+          .set({ IdState: idState, OpeningDate: new Date(openingDate.setSeconds(openingDate.getSeconds() - 10)) })
         .execute()
         .then(result => {
              resolve(result.affected);
