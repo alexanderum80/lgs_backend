@@ -19,16 +19,19 @@ export class CageResolver {
   }
 
   @Query(() => [CageEntity], { name: 'getCages' })
+  @UseGuards(new AuthGuard())
   findAll() {
     return this.cageService.findAll();
   }
 
   @Query(() => CageEntity, { name: 'getCage' })
+  @UseGuards(new AuthGuard())
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.cageService.findOne(id);
   }
 
   @Mutation(() => Number)
+  @UseGuards(new AuthGuard())
   removeCage(@Args('idOperation', { type: () => Int }) idOperation: number) {
     return this.cageService.remove(idOperation);
   }

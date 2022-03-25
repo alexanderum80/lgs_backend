@@ -59,13 +59,18 @@ export class UsersService {
                         if (userInfo.Deleted) {
                             reject('This user is Deleted. Cannot Loggin.')
                         }
-    
-                        userInfo.Token = await this.createToken(userInfo);
 
-                        resolve(userInfo);
+                        this._usersRolesSvc.findOne(userInfo.Id).then(async token => {
+                            userInfo.UserRoles = token;
+                            userInfo.Token = await this.createToken(userInfo);
+
+                            resolve(userInfo);
+                        }).catch(err => {
+                            reject(err.message || err);
+                        });
                     }
                 }).catch(err => {
-                    reject(err);
+                    reject(err.message || err);
                 });
             });
         } catch (err) {

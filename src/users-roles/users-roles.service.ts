@@ -18,10 +18,10 @@ export class UsersRolesService {
     }
   }
 
-  async findOne(id: number): Promise<UsersRolesEntity[]> {
+  async findOne(idUser: number): Promise<UsersRolesEntity[]> {
     try {
       return new Promise<UsersRolesEntity[]>((resolve, reject) => {
-        this.userRolesRepository.find({ IdUser: id }).then(result => {
+        this.userRolesRepository.find({ IdUser: idUser }).then(result => {
           resolve(result);
         }).catch(err => {
           reject(err);

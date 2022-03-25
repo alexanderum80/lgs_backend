@@ -11,21 +11,25 @@ export class TablesResolver {
   constructor(private readonly tablesService: TablesService) {}
 
   @Query(() => [TablesEntity], { name: 'getTables' })
+  @UseGuards(new AuthGuard())
   async findAll(): Promise<TablesEntity[]> {
     return this.tablesService.findAll();
   }
 
   @Query(() => [TablesEntity], { name: 'getTablesWithInitValues' })
+  @UseGuards(new AuthGuard())
   async findAllWithInitValues(): Promise<TablesEntity[]> {
     return this.tablesService.findAllWithInitValues();
   }
 
   @Query(() => [TablesInitValuesEntity], { name: 'getTableInitValues' })
+  @UseGuards(new AuthGuard())
   async findInitialValues(@Args({ name: 'idTable', type: () => Int }) idTable: number): Promise<TablesInitValuesEntity[]> {
     return this.tablesService.findInitialValues(idTable);
   }
 
   @Query(() => TablesEntity, { name: 'getTable' })
+  @UseGuards(new AuthGuard())
   async findOne(@Args('id', { type: () => Int }) id: number): Promise<TablesEntity> {
     return this.tablesService.findOne(id);
   }
@@ -49,6 +53,7 @@ export class TablesResolver {
   }
 
   @Mutation(() => Number)
+  @UseGuards(new AuthGuard())
   async deleteTable(@Args('IDs', { type: () => [Int] }) IDs: number[]): Promise<number> {
     return this.tablesService.delete(IDs);
   }

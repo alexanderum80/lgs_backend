@@ -16,7 +16,7 @@ type UsersEntity {
   Enabled: Boolean!
   StartDate: DateTime!
   Deleted: Boolean!
-  UserRoles: [UsersRolesEntity!]!
+  UserRoles: [UsersRolesEntity!]
   Token: String!
 }
 
@@ -259,17 +259,17 @@ type Mutation {
   recoverPlayer(id: Int!): Float!
   createCountry(countryInput: CountryInput!): CountriesEntity!
   updateCountry(countryInput: CountryInput!): CountriesEntity!
-  deleteCountry(IDs: [Int!]!): Float!
+  deleteCountry(IDs: [Int!]!): Int!
   createCoin(coinInput: CoinInput!): CoinEntity!
   updateCoin(coinInput: CoinInput!): CoinEntity!
-  deleteCoin(IDs: [Int!]!): CoinEntity!
+  deleteCoin(IDs: [Int!]!): Int!
   createLender(lenderInput: LenderInput!): LendersEntity!
   updateLender(lenderInput: LenderInput!): LendersEntity!
   deleteLender(IDs: [Int!]!): Float!
   saveCasinoInfo(casinoInfoInput: CasinoInfoInput!): CasinoInfoEntity!
   createCity(cityInput: CityInput!): CitiesEntity!
   updateCity(cityInput: CityInput!): CitiesEntity!
-  removeCity(IDS: [Int!]!): CitiesEntity!
+  removeCity(IDS: [Int!]!): Int!
   createTableGame(TableGameInput: TableGameInput!): TablesGameEntity!
   updateTableGame(TableGameInput: TableGameInput!): TablesGameEntity!
   deleteTableGame(IDs: [Int!]!): Float!
@@ -282,11 +282,12 @@ type Mutation {
   cancelOperation(idOperation: Int!): Int!
   deleteOperation(IDs: [Int!]!): Float!
   finishInitialization: Boolean!
+  finishClosing: Boolean!
   createCage(createCageInput: CageInput!): CageEntity!
   removeCage(idOperation: Int!): Float!
   createPayment(paymentInput: PaymentInput!): PaymentsEntity!
   updatePayment(paymentInput: PaymentInput!): PaymentsEntity!
-  removePayment(IDs: [Int!]!): PaymentsEntity!
+  removePayment(IDs: [Int!]!): Int!
 }
 
 input UserInput {

@@ -64,9 +64,9 @@ export class OperationsService {
         //   .where('r.Date >= :date', { date: today.toDateString() })
         //   .andWhere('r.IdOperationType = :operType', { operType: idOperationType })
         // .execute().then(result => {
-            resolve(result);
+          resolve(result);
         }).catch(err => {
-            reject(err.message || err);
+          reject(err.message || err);
         });
       });
     } catch (err) {
@@ -78,9 +78,9 @@ export class OperationsService {
     try {
       return new Promise<OperationsREntity>((resolve, reject) => {
         this.operationRRepository.findOne(id, { relations: ['OperationsD']}).then(result => {
-            resolve(result);
+          resolve(result);
         }).catch(err => {
-            reject(err.message || err);
+          reject(err.message || err);
         });
       });
     } catch (err) {
@@ -92,9 +92,9 @@ export class OperationsService {
     try {
       return new Promise<OperationsDEntity[]>((resolve, reject) => {
         this.operationDRepository.find({ IdOperation: id }).then(result => {
-            resolve(result);
+          resolve(result);
         }).catch(err => {
-            reject(err.message || err);
+          reject(err.message || err);
         });
       });
     } catch (err) {
@@ -119,10 +119,10 @@ export class OperationsService {
           this.operationDRepository.save(operationInput.OperationD).then(() => {
             resolve(result);
           }).catch(err => {
-              reject(err.message || err);
+            reject(err.message || err);
           });
         }).catch(err => {
-            reject(err.message || err);
+          reject(err.message || err);
         });
       });
     } catch (err) {
@@ -150,7 +150,7 @@ export class OperationsService {
             reject(err.message || err);
           })
         }).catch(err => {
-            reject(err.message || err);
+          reject(err.message || err);
         });
       });
     } catch (err) {
@@ -200,7 +200,7 @@ export class OperationsService {
         this.operationRRepository.delete(IDs).then(result => {
           resolve(result.affected);
         }).catch(err => {
-            reject(err.message || err);
+          reject(err.message || err);
         });
       });
     } catch (err) {
@@ -269,6 +269,31 @@ export class OperationsService {
         });
 
         await this._casinoInfoSvc.updateCasinoState(EOperations.OPEN, operationDate).then(() => {
+          resolve(true);
+        }).catch(err => {
+          reject(err.message || err);
+        });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }    
+  }
+
+  async finishClosing(): Promise<boolean> {
+    try {
+      return new Promise<boolean>(async (resolve, reject) => {
+        const operationDate = new Date();
+
+        // const pendingOperations = await this.operationRRepository.find({ Finished: false }).then(op => {
+        //   return op;
+        // });
+
+        // if (pendingOperations.length) {
+        //   reject(`There are ${ pendingOperations.length } operations that aren't Finished. You must Finish or Delete those operations.`);
+        //   return;
+        // }
+
+        await this._casinoInfoSvc.updateCasinoState(EOperations.CLOSED, operationDate).then(() => {
           resolve(true);
         }).catch(err => {
           reject(err.message || err);

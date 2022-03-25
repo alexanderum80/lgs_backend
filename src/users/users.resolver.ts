@@ -58,7 +58,7 @@ export class UsersResolver {
     }
 
     @Mutation(() => Number)
-    // @UseGuards(new AuthGuard())
+    @UseGuards(new AuthGuard())
     async deleteUser(
         @Args({ name: 'IDs', type: () => [Int] }) IDs: number[]
     ): Promise<Number> {
@@ -66,7 +66,7 @@ export class UsersResolver {
     }
 
     @Mutation(() => Number)
-    // @UseGuards(new AuthGuard())
+    @UseGuards(new AuthGuard())
     async recoverUser(
         @Args({ name: 'id', type: () => Int }) id: number
     ): Promise<Number> {

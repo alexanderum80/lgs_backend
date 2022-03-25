@@ -37,7 +37,7 @@ export class UsersEntity {
     @Column()
     Deleted: boolean
 
-    @Field(() => [UsersRolesEntity])
+    @Field(() => [UsersRolesEntity], { nullable: true })
     @OneToMany(() => UsersRolesEntity, userRoles => userRoles.Users)
     @JoinColumn({ name: 'Id', referencedColumnName: 'IdUser'})
     UserRoles?: UsersRolesEntity[];

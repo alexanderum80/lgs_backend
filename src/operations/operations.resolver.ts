@@ -11,11 +11,13 @@ export class OperationsResolver {
   constructor(private readonly operationsService: OperationsService) {}
 
   @Query(() => [OperationsREntity], { name: 'getOperations' })
+  @UseGuards(new AuthGuard())
   async findAll(): Promise<OperationsREntity[]> {
     return this.operationsService.findAll();
   }
 
   @Query(() => [OperationsRView], { name: 'getOperationsToday' })
+  @UseGuards(new AuthGuard())
   async findToday(
     @Args('idState', { type: () => Int }) idState: number 
   ): Promise<OperationsRView[]> {
@@ -23,11 +25,13 @@ export class OperationsResolver {
   }
 
   @Query(() => OperationsREntity, { name: 'getOperation' })
+  @UseGuards(new AuthGuard())
   async findOne(@Args('id', { type: () => Int }) id: number): Promise<OperationsREntity> {
     return this.operationsService.findOne(id);
   }
 
   @Query(() => [OperationsDEntity], { name: 'getOperationDetails' })
+  @UseGuards(new AuthGuard())
   async findDetails(@Args('id', { type: () => Int }) id: number): Promise<OperationsDEntity[]> {
     return this.operationsService.findDetails(id);
   }
@@ -67,6 +71,7 @@ export class OperationsResolver {
   }
 
   @Mutation(() => Number)
+  @UseGuards(new AuthGuard())
   async deleteOperation(@Args('IDs', { type: () => [Int] }) IDs: number[]): Promise<number> {
     return this.operationsService.delete(IDs);
   }
@@ -77,5 +82,11 @@ export class OperationsResolver {
     @Context(DEFAULT_GRAPHQL_CONTEXT) user: UsersEntity,
   ): Promise<boolean> {
     return this.operationsService.finishInitialization(user.Id);
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(new AuthGuard())
+  async finishClosing(): Promise<boolean> {
+    return this.operationsService.finishClosing();
   }
 }
