@@ -19,6 +19,14 @@ export class UsersResolver {
         return this._usersService.authenticate(user, passw);
     }
 
+    @Query(() => UsersEntity)
+    @UseGuards(new AuthGuard())
+    async refreshToken(
+        @Args('userInfo') userInfo: UserInput
+    ): Promise<UsersEntity> {
+        return this._usersService.refreshToken(userInfo);
+    }
+
     @Query(() => [UsersEntity])
     @UseGuards(new AuthGuard())
     async getAllUsers(): Promise<UsersEntity[]> {

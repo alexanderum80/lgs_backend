@@ -204,11 +204,12 @@ type PaymentInstrumentsEntity {
 
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
+  refreshToken(userInfo: UserInput!): UsersEntity!
   getAllUsers: [UsersEntity!]!
   getUserById(id: Int!): UsersEntity!
   getUserByName(name: String!): UsersEntity!
   getUsersRoles: [UsersRolesEntity!]!
-  getUserRoles(idUser: Int!): UsersRolesEntity!
+  getUserRoles(idUser: Int!): [UsersRolesEntity!]!
   getRoles: [RolesEntity!]!
   getRole(id: Int!): RolesEntity!
   getPlayers: [PlayersEntity!]!
@@ -242,13 +243,22 @@ type Query {
   getPayment(id: Int!): PaymentsEntity!
 }
 
+input UserInput {
+  Id: Float!
+  UserName: String!
+  Name: String!
+  LastName: String!
+  Psw: String!
+  Role: [Int!]!
+  Enabled: Boolean!
+}
+
 type Mutation {
   createUser(userInfo: UserInput!): UsersEntity!
   updateUser(userInfo: UserInput!): UsersEntity!
   deleteUser(IDs: [Int!]!): Float!
   recoverUser(id: Int!): Float!
   createUsersRole(usersRolesInput: UsersRolesInput!): UsersRolesEntity!
-  updateUsersRole(usersRolesInput: UsersRolesInput!): UsersRolesEntity!
   removeUsersRole(id: Int!): UsersRolesEntity!
   createRole(createRoleInput: RoleInput!): RolesEntity!
   updateRole(updateRoleInput: RoleInput!): RolesEntity!
@@ -288,16 +298,6 @@ type Mutation {
   createPayment(paymentInput: PaymentInput!): PaymentsEntity!
   updatePayment(paymentInput: PaymentInput!): PaymentsEntity!
   removePayment(IDs: [Int!]!): Int!
-}
-
-input UserInput {
-  Id: Float!
-  UserName: String!
-  Name: String!
-  LastName: String!
-  Psw: String!
-  Role: [Int!]!
-  Enabled: Boolean!
 }
 
 input UsersRolesInput {

@@ -1,10 +1,11 @@
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
 import * as jwt from 'jsonwebtoken';
 
 export const DEFAULT_GRAPHQL_CONTEXT = 'user';
-export const SECRET_KEY = 'LGS_Casino';
+export const JWT_SECRET = 'LgsCasinoEAE';
+export const JWT_SECRET_REFRESH = 'EAELgsCasino';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,6 +18,8 @@ export class AuthGuard implements CanActivate {
 
         this.validateToken(ctx.req.headers.authorization).then(token => {
             ctx[DEFAULT_GRAPHQL_CONTEXT] = token;
+        }).catch(err => {
+            throw new HttpException('Token Inválido', HttpStatus.UNAUTHORIZED);
         });
 
         return true;
@@ -29,9 +32,9 @@ export class AuthGuard implements CanActivate {
 
         const token = auth.split(' ')[1];
         try {
-            return jwt.verify(token, SECRET_KEY);
+            return jwt.verify(token, JWT_SECRET);
         } catch (err) {
-            throw new HttpException('Token Inválido', HttpStatus.UNAUTHORIZED);
+             new HttpException('Token Inválido', HttpStatus.UNAUTHORIZED);
         }
     }
 

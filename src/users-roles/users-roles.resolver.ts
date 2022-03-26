@@ -11,11 +11,11 @@ export class UsersRolesResolver {
 
   @Query(() => [UsersRolesEntity], { name: 'getUsersRoles' })
   @UseGuards(new AuthGuard())
-  async findAll() {
+  async findAll():Promise<UsersRolesEntity[]> {
     return this.usersRolesService.findAll();
   }
 
-  @Query(() => UsersRolesEntity, { name: 'getUserRoles' })
+  @Query(() => [UsersRolesEntity], { name: 'getUserRoles' })
   @UseGuards(new AuthGuard())
   async findOne(@Args('idUser', { type: () => Int }) idUser: number): Promise<UsersRolesEntity[]> {
     return this.usersRolesService.findOne(idUser);
@@ -23,14 +23,8 @@ export class UsersRolesResolver {
 
   @Mutation(() => UsersRolesEntity)
   @UseGuards(new AuthGuard())
-  createUsersRole(@Args('usersRolesInput') usersRolesInput: UsersRolesInput) {
+  async createUsersRole(@Args('usersRolesInput') usersRolesInput: UsersRolesInput): Promise<UsersRolesEntity> {
     return this.usersRolesService.create(usersRolesInput);
-  }
-  
-  @Mutation(() => UsersRolesEntity)
-  @UseGuards(new AuthGuard())
-  updateUsersRole(@Args('usersRolesInput') usersRolesInput: UsersRolesInput) {
-    return this.usersRolesService.update(usersRolesInput);
   }
 
   @Mutation(() => UsersRolesEntity)

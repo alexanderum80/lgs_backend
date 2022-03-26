@@ -284,14 +284,14 @@ export class OperationsService {
       return new Promise<boolean>(async (resolve, reject) => {
         const operationDate = new Date();
 
-        // const pendingOperations = await this.operationRRepository.find({ Finished: false }).then(op => {
-        //   return op;
-        // });
+        const pendingOperations = await this.operationRRepository.find({ Finished: false }).then(op => {
+          return op;
+        });
 
-        // if (pendingOperations.length) {
-        //   reject(`There are ${ pendingOperations.length } operations that aren't Finished. You must Finish or Delete those operations.`);
-        //   return;
-        // }
+        if (pendingOperations.length) {
+          reject(`There are ${ pendingOperations.length } operations that aren't Finished. You must Finish or Delete those operations.`);
+          return;
+        }
 
         await this._casinoInfoSvc.updateCasinoState(EOperations.CLOSED, operationDate).then(() => {
           resolve(true);

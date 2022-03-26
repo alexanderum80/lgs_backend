@@ -10,7 +10,7 @@ export class UsersRolesService {
     @InjectRepository(UsersRolesEntity) private readonly userRolesRepository: Repository<UsersRolesEntity>
   ) {}
 
-  async findAll(): Promise<UsersRolesEntity> {
+  async findAll(): Promise<UsersRolesEntity[]> {
     try {
       
     } catch (err) {
@@ -46,10 +46,6 @@ export class UsersRolesService {
     }
   }
   
-  update(usersRolesInput: UsersRolesInput) {
-    return `This action updates a #${usersRolesInput.IdRole} usersRole`;
-  }
-
   async remove(idUser: number): Promise<UsersRolesEntity> {
     try {
       return new Promise<UsersRolesEntity>((resolve, reject) => {
