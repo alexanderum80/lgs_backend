@@ -293,7 +293,7 @@ export class OperationsService {
           return;
         }
 
-        await this._casinoInfoSvc.updateCasinoState(EOperations.CLOSED, operationDate).then(() => {
+        await this._casinoInfoSvc.updateCasinoState(EOperations.CLOSED).then(() => {
           resolve(true);
         }).catch(err => {
           reject(err.message || err);
