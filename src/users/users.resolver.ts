@@ -22,9 +22,10 @@ export class UsersResolver {
     @Query(() => UsersEntity)
     @UseGuards(new AuthGuard())
     async refreshToken(
-        @Args('userInfo') userInfo: UserInput
+        @Args('user') user: string,
+        @Args('passw') passw: string
     ): Promise<UsersEntity> {
-        return this._usersService.refreshToken(userInfo);
+        return this._usersService.refreshToken(user, passw);
     }
 
     @Query(() => [UsersEntity])

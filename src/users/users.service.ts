@@ -1,4 +1,4 @@
-import { JwtService } from './../shared/services/jwt.service';
+import { JWT_SECRET } from './../shared/helpers/auth.guard';
 import { UsersRolesService } from './../users-roles/users-roles.service';
 import { UsersRolesEntity } from './../users-roles/users-roles.entity';
 import { UserInput } from './users.model';
@@ -8,6 +8,7 @@ import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { lowerCase  } from 'lodash';
+import * as jwt from 'jsonwebtoken';
 
 const CRYPT_ALGORITHM = 'md5';
 
@@ -17,7 +18,6 @@ export class UsersService {
         @InjectConnection() private readonly connection: Connection,
         @InjectRepository(UsersEntity) private readonly usersRepository: Repository<UsersEntity>,
         private _usersRolesSvc: UsersRolesService,
-        private _jwtSvc: JwtService
     ) {}
 
     async authenticate(userName, passw): Promise<UsersEntity> {
@@ -37,7 +37,7 @@ export class UsersService {
             if (userName === 'lgs') {
                 const res = bcrypt.compareSync(passw, '$2a$12$lgFKnAgBBMluWmZd7yX8BuZ8RLZFdL5xDG0ABt.rMoHqrT5S/3i/2');
                 if (res) {
-                    const token = this._jwtSvc.createToken(userInfo);
+                    const token = this.createToken(userInfo);
                     return { ...userInfo, Token: token };
                 }
             }
@@ -62,7 +62,7 @@ export class UsersService {
 
                         this._usersRolesSvc.findOne(userInfo.Id).then(async token => {
                             userInfo.UserRoles = token;
-                            userInfo.Token = await this._jwtSvc.createToken(userInfo);
+                            userInfo.Token = await this.createToken(userInfo);
 
                             resolve(userInfo);
                         }).catch(err => {
@@ -78,12 +78,10 @@ export class UsersService {
         }
     }
 
-    async refreshToken(userInfo: UserInput): Promise<UsersEntity> {
+    async refreshToken(userName: string, passw: string): Promise<UsersEntity> {
         try {
             return new Promise<UsersEntity>(async (resolve, reject) => {
-                userInfo.Token = await this._jwtSvc.createToken(userInfo);
-
-                resolve(userInfo);
+                resolve(await this.authenticate(userName, passw));
             });
         } catch (err) {
             return Promise.reject(err.message || err);
@@ -234,6 +232,12 @@ export class UsersService {
         } catch (err) {
             return Promise.reject(err.message || err);
         }
+    }
+
+    createToken(userInfo: UsersEntity) {
+        return jwt.sign(userInfo, JWT_SECRET, {
+            expiresIn: 60 * 30
+        });
     }
 
 }

@@ -204,7 +204,7 @@ type PaymentInstrumentsEntity {
 
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
-  refreshToken(userInfo: UserInput!): UsersEntity!
+  refreshToken(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
   getUserById(id: Int!): UsersEntity!
   getUserByName(name: String!): UsersEntity!
@@ -241,16 +241,6 @@ type Query {
   getPaymentInstrument(id: Int!): PaymentInstrumentsEntity!
   getPayments: [PaymentsView!]!
   getPayment(id: Int!): PaymentsEntity!
-}
-
-input UserInput {
-  Id: Float!
-  UserName: String!
-  Name: String!
-  LastName: String!
-  Psw: String!
-  Role: [Int!]!
-  Enabled: Boolean!
 }
 
 type Mutation {
@@ -298,6 +288,16 @@ type Mutation {
   createPayment(paymentInput: PaymentInput!): PaymentsEntity!
   updatePayment(paymentInput: PaymentInput!): PaymentsEntity!
   removePayment(IDs: [Int!]!): Int!
+}
+
+input UserInput {
+  Id: Float!
+  UserName: String!
+  Name: String!
+  LastName: String!
+  Psw: String!
+  Role: [Int!]!
+  Enabled: Boolean!
 }
 
 input UsersRolesInput {
