@@ -1,3 +1,4 @@
+import { DEFAULT_GRAPHQL_CONTEXT } from './../shared/helpers/auth.guard';
 import { UserInput } from './users.model';
 import { UsersService as UsersService } from './users.service';
 import { Resolver, Query, Args, Int, Mutation, Context } from '@nestjs/graphql';
@@ -17,6 +18,14 @@ export class UsersResolver {
         @Args('passw') passw: string
     ): Promise<UsersEntity> {
         return this._usersService.authenticate(user, passw);
+    }
+
+    @Query(() => Boolean)
+    @UseGuards(new AuthGuard())
+    async logout(
+        @Context(DEFAULT_GRAPHQL_CONTEXT) user: UsersEntity,
+    ): Promise<boolean> {
+        return this._usersService.logout(user.Id);
     }
 
     @Query(() => UsersEntity)

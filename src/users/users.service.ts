@@ -2,10 +2,10 @@ import { JWT_SECRET } from './../shared/helpers/auth.guard';
 import { UsersRolesService } from './../users-roles/users-roles.service';
 import { UsersRolesEntity } from './../users-roles/users-roles.entity';
 import { UserInput } from './users.model';
-import { UsersEntity } from './users.entity';
+import { UsersEntity, UsersLogEntity } from './users.entity';
 import { Injectable } from '@nestjs/common';
-import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
-import { Connection, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { lowerCase  } from 'lodash';
 import * as jwt from 'jsonwebtoken';
@@ -15,8 +15,8 @@ const CRYPT_ALGORITHM = 'md5';
 @Injectable()
 export class UsersService {
     constructor(
-        @InjectConnection() private readonly connection: Connection,
         @InjectRepository(UsersEntity) private readonly usersRepository: Repository<UsersEntity>,
+        @InjectRepository(UsersLogEntity) private readonly usersLogRepository: Repository<UsersLogEntity>,
         private _usersRolesSvc: UsersRolesService,
     ) {}
 
@@ -63,6 +63,10 @@ export class UsersService {
                         this._usersRolesSvc.findOne(userInfo.Id).then(async token => {
                             userInfo.UserRoles = token;
                             userInfo.Token = await this.createToken(userInfo);
+
+                            await this.insertUserLog(userInfo.Id, 0).catch(err => {
+                                return reject(err.message | err);
+                            });
 
                             resolve(userInfo);
                         }).catch(err => {
@@ -238,6 +242,29 @@ export class UsersService {
         return jwt.sign(userInfo, JWT_SECRET, {
             expiresIn: 60 * 30
         });
+    }
+
+    async logout(idUser: number): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this.insertUserLog(idUser, 1).then(() => {
+                resolve(true);
+            }).catch(err => {
+                reject(err.message || err);
+            })
+        });
+    }
+
+    async insertUserLog(idUser: number, idType: number): Promise<void> {
+        const userLog: UsersLogEntity = {
+            IdTipo: idType,
+            IdUser: idUser,
+            Date: new Date
+        }
+        this.usersLogRepository.save(userLog).catch(err => {
+            throw new Error(err);
+        });
+
+        return;
     }
 
 }

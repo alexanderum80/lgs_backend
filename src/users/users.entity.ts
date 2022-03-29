@@ -45,3 +45,23 @@ export class UsersEntity {
     @Field()
     Token?: string;
 }
+
+@ObjectType()
+@Entity('LGS_Users_Log')
+export class UsersLogEntity {
+    @Field()
+    @PrimaryGeneratedColumn()
+    IdLog?: number;
+
+    @Field()
+    @Column()
+    IdUser: number;
+
+    @Field()
+    @Column()
+    IdTipo: number;
+
+    @Field()
+    @Column()
+    Date: Date;
+}

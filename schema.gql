@@ -204,6 +204,7 @@ type PaymentInstrumentsEntity {
 
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
+  logout: Boolean!
   refreshToken(passw: String!, user: String!): UsersEntity!
   getAllUsers: [UsersEntity!]!
   getUserById(id: Int!): UsersEntity!
