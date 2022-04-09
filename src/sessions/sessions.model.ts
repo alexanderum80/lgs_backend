@@ -1,13 +1,13 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
 
 @InputType()
-export class LenderInput {
+export class SessionInput {
   @Field(() => Int)
-  IdLender: number;
+  IdSession: number;
 
   @Field()
-  Name: string;
-
+  OpenDate: Date;
+  
   @Field()
-  Enabled: boolean;
+  CloseDate: Date;
 }

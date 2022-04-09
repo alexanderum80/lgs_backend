@@ -2,17 +2,17 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()
-@Entity('LGS_Lenders')
-export class LendersEntity {
+@Entity('LGS_OP_Sessions')
+export class SessionsEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
-  IdLender: number;
+  IdSession: number;
 
   @Field()
   @Column()
-  Name: string;
-
+  OpenDate: Date;
+  
   @Field()
   @Column()
-  Enabled: boolean;
+  CloseDate: Date;
 }

@@ -10,7 +10,6 @@ import { UsersRolesModule } from './users-roles/users-roles.module';
 import { PlayersModule } from './players/players.module';
 import { CountriesModule } from './countries/countries.module';
 import { CoinsModule } from './coins/coins.module';
-import { LendersModule } from './lenders/lenders.module';
 import { CasinoInfoModule } from './casino-info/casino-info.module';
 import { CitiesModule } from './cities/cities.module';
 import { TablesGameModule } from './tables-game/tables-game.module';
@@ -19,6 +18,8 @@ import { OperationsModule } from './operations/operations.module';
 import { PaymentInstrumentsModule } from './payment-instruments/payment-instruments.module';
 import { CageModule } from './cage/cage.module';
 import { PaymentsModule } from './payments/payments.module';
+import { TrackingModule } from './tracking/tracking.module';
+import { SessionsModule } from './sessions/sessions.module';
 import 'dotenv/config';
 
 @Module({
@@ -48,7 +49,6 @@ import 'dotenv/config';
     PlayersModule,
     CountriesModule,
     CoinsModule,
-    LendersModule,
     CasinoInfoModule,
     CitiesModule,
     TablesGameModule,
@@ -57,6 +57,8 @@ import 'dotenv/config';
     PaymentInstrumentsModule,
     CageModule,
     PaymentsModule,
+    TrackingModule,
+    SessionsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

@@ -109,12 +109,6 @@ type CoinEntity {
   Enabled: Boolean!
 }
 
-type LendersEntity {
-  IdLender: Int!
-  Name: String!
-  Enabled: Boolean!
-}
-
 type CasinoInfoEntity {
   Id: Float!
   Name: String!
@@ -202,6 +196,58 @@ type PaymentInstrumentsEntity {
   Name: String!
 }
 
+type PlayerStatusView {
+  IdPlayer: Int!
+  Name: String!
+  PayInstrument: String!
+  date: DateTime!
+  ini: Float!
+  balance: Float!
+  winlost: Float!
+}
+
+type PlayerStatusCheckView {
+  IdPlayer: Int!
+  Name: String!
+  PayInstrument: String!
+  date: DateTime!
+  ini: Float!
+  ckeck: Float!
+  winlost: Float!
+}
+
+type PlayerTrackingView {
+  IdTracking: Float!
+  IdTable: Float!
+  Description: String!
+  IdPlayer: Float!
+  Name: String!
+  IdOperations: Float!
+  IdOperationType: Float!
+  OperationName: String!
+  Date: DateTime!
+  IdPayment: Float
+  PayDescription: String
+  PayInstrument: String
+  Denomination: Float
+  Qty: Float
+  Amount: Float
+}
+
+type FinalPlayerSessions {
+  IdSession: Int!
+  OpenDate: DateTime!
+  IdPlayer: Int!
+  Player: String!
+  Result: Float!
+}
+
+type SessionsEntity {
+  IdSession: Int!
+  OpenDate: DateTime!
+  CloseDate: DateTime!
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   logout: Boolean!
@@ -219,8 +265,6 @@ type Query {
   getCountry(id: Int!): CountriesEntity!
   getCoins: [CoinEntity!]!
   getCoin(id: Int!): CoinEntity!
-  getLenders: [LendersEntity!]!
-  getLender(id: Int!): LendersEntity!
   getCasinoInfo: CasinoInfoEntity!
   getCasinoState: Int!
   getCities: [CitiesEntity!]!
@@ -242,6 +286,15 @@ type Query {
   getPaymentInstrument(id: Int!): PaymentInstrumentsEntity!
   getPayments: [PaymentsView!]!
   getPayment(id: Int!): PaymentsEntity!
+  currentPlayersStatus: [PlayerStatusView!]!
+  currentPlayerStatus(idPlayer: Int!): [PlayerStatusView!]!
+  currentPlayersStatusCheck: [PlayerStatusCheckView!]!
+  currentPlayerStatusCheck(idPlayer: Int!): [PlayerStatusCheckView!]!
+  currentPlayersTracking: [PlayerTrackingView!]!
+  currentPlayerTracking(idPlayer: Int!): [PlayerTrackingView!]!
+  finalPlayerSessions(idPlayer: Int, finalSession: Int!, initSession: Int!): [FinalPlayerSessions!]!
+  getSessions: [SessionsEntity!]!
+  getSession(id: Int!): SessionsEntity!
 }
 
 type Mutation {
@@ -264,9 +317,6 @@ type Mutation {
   createCoin(coinInput: CoinInput!): CoinEntity!
   updateCoin(coinInput: CoinInput!): CoinEntity!
   deleteCoin(IDs: [Int!]!): Int!
-  createLender(lenderInput: LenderInput!): LendersEntity!
-  updateLender(lenderInput: LenderInput!): LendersEntity!
-  deleteLender(IDs: [Int!]!): Float!
   saveCasinoInfo(casinoInfoInput: CasinoInfoInput!): CasinoInfoEntity!
   createCity(cityInput: CityInput!): CitiesEntity!
   updateCity(cityInput: CityInput!): CitiesEntity!
@@ -335,12 +385,6 @@ input CoinInput {
   IdCoin: Int!
   Coin: String!
   Rate: Float!
-  Enabled: Boolean!
-}
-
-input LenderInput {
-  IdLender: Int!
-  Name: String!
   Enabled: Boolean!
 }
 
