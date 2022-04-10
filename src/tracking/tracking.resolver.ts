@@ -1,7 +1,7 @@
 import { AuthGuard } from './../shared/helpers/auth.guard';
 import { Resolver, Query, Args, Int } from '@nestjs/graphql';
 import { TrackingService } from './tracking.service';
-import { PlayerStatusView, PlayerStatusCheckView, PlayerTrackingView, FinalPlayerSessions } from './tracking.entity';
+import { PlayerStatusView, PlayerStatusCheckView, PlayerTrackingView, FinalPlayerSessions, DropResultsView } from './tracking.entity';
 import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => PlayerStatusView)
@@ -55,5 +55,14 @@ export class TrackingResolver {
     @Args('idPlayer', { type: () => Int, nullable: true }) idPlayer: number,
   ): Promise<FinalPlayerSessions[]> {
     return this.trackingService.findFinalPlayerSession(initSession, finalSession, idPlayer);
+  }
+
+  @Query(() => [DropResultsView], { name: 'dropResults' })
+  @UseGuards(new AuthGuard())
+  async findDropResults(
+    @Args('initSession', { type: () => Int }) initSession: number,
+    @Args('finalSession', { type: () => Int }) finalSession: number,
+  ): Promise<DropResultsView[]> {
+    return this.trackingService.findDropResultsView(initSession, finalSession);
   }
 }

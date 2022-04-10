@@ -1,9 +1,6 @@
 import { CageService } from './../cage/cage.service';
-import { CageEntity } from './../cage/cage.entity';
 import { CasinoInfoService } from './../casino-info/casino-info.service';
-import { PaymentsEntity } from './../payments/payments.entity';
 import { TablesService } from './../tables/tables.service';
-import { TablesEntity } from './../tables/tables.entity';
 import { OperationInput, EPaymentInstrument, EOperations, OperationDInput, OperationRInput } from './operations.model';
 import { Injectable } from '@nestjs/common';
 import { OperationsREntity, OperationsDEntity, OperationsRView } from './operations.entity';

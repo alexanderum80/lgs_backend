@@ -1,6 +1,6 @@
 import { Between, getManager, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { Injectable } from '@nestjs/common';
-import { PlayerStatusView, PlayerStatusCheckView, PlayerTrackingView, FinalPlayerSessions } from './tracking.entity';
+import { PlayerStatusView, PlayerStatusCheckView, PlayerTrackingView, FinalPlayerSessions, DropResultsView } from './tracking.entity';
 
 @Injectable()
 export class TrackingService {
@@ -114,6 +114,23 @@ export class TrackingService {
         }
 
         manager.find(FinalPlayerSessions, { where: _where }).then(result => {
+            resolve(result);
+        }).catch(err => {
+            reject(err.message || err);
+        });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }  
+  }
+  
+  async findDropResultsView(initSession: number, finalSession: number): Promise<DropResultsView[]> {
+    try {
+      return new Promise<DropResultsView[]>((resolve, reject) => {
+        const manager = getManager();
+        const _where = { IdSession: Between(initSession, finalSession) };
+
+        manager.find(DropResultsView, { where: _where }).then(result => {
             resolve(result);
         }).catch(err => {
             reject(err.message || err);

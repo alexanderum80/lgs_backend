@@ -152,3 +152,31 @@ export class FinalPlayerSessions {
   @ViewColumn()
   Result: number;
 }
+
+@ObjectType()
+@ViewEntity('vw_DropResults')
+export class DropResultsView {
+  @Field()
+  @ViewColumn()
+  IdSession: number;
+   
+  @Field()
+  @ViewColumn()
+  IdTable: number;
+    
+  @Field()
+  @ViewColumn()
+  Table: string;
+
+  @Field()
+  @ViewColumn()
+  Date: Date;
+
+  @Field()
+  @ViewColumn()
+  Time: string;
+        
+  @Field()
+  @ViewColumn()
+  Amount: number;
+}

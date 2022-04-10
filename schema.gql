@@ -242,6 +242,15 @@ type FinalPlayerSessions {
   Result: Float!
 }
 
+type DropResultsView {
+  IdSession: Float!
+  IdTable: Float!
+  Table: String!
+  Date: DateTime!
+  Time: String!
+  Amount: Float!
+}
+
 type SessionsEntity {
   IdSession: Int!
   OpenDate: DateTime!
@@ -293,6 +302,7 @@ type Query {
   currentPlayersTracking: [PlayerTrackingView!]!
   currentPlayerTracking(idPlayer: Int!): [PlayerTrackingView!]!
   finalPlayerSessions(idPlayer: Int, finalSession: Int!, initSession: Int!): [FinalPlayerSessions!]!
+  dropResults(finalSession: Int!, initSession: Int!): [DropResultsView!]!
   getSessions: [SessionsEntity!]!
   getSession(id: Int!): SessionsEntity!
 }
