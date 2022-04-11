@@ -64,7 +64,6 @@ type OperationsDEntity {
 
 type OperationsRView {
   IdOperation: Float!
-  Consecutive: Float!
   IdOperationType: Float!
   IdTable: Float!
   Table: String!
@@ -77,6 +76,7 @@ type OperationsRView {
   Cancelled: Boolean!
   AmountIn: Float!
   AmountOut: Float!
+  Bonus: Float!
 }
 
 type PlayersEntity {
@@ -257,6 +257,20 @@ type SessionsEntity {
   CloseDate: DateTime!
 }
 
+type CreditRequestEntity {
+  IdCredit: Int!
+  Date: DateTime!
+  IdPlayer: Float!
+  Player: PlayersEntity!
+  IdTable: Float!
+  Amount: Float!
+  Passed: Boolean!
+  Cancelled: Boolean!
+  IdSession: Float!
+  IdOperation: Float!
+  IdUser: Float!
+}
+
 type Query {
   authenticateUser(passw: String!, user: String!): UsersEntity!
   logout: Boolean!
@@ -305,6 +319,9 @@ type Query {
   dropResults(finalSession: Int!, initSession: Int!): [DropResultsView!]!
   getSessions: [SessionsEntity!]!
   getSession(id: Int!): SessionsEntity!
+  creditsRequest: [CreditRequestEntity!]!
+  pendingCreditsRequest: [CreditRequestEntity!]!
+  creditRequest(id: Int!): CreditRequestEntity!
 }
 
 type Mutation {
@@ -349,6 +366,8 @@ type Mutation {
   createPayment(paymentInput: PaymentInput!): PaymentsEntity!
   updatePayment(paymentInput: PaymentInput!): PaymentsEntity!
   removePayment(IDs: [Int!]!): Int!
+  approveCreditRequest(idCredit: Int!): Int!
+  denyCreditRequest(idCredit: Int!): Int!
 }
 
 input UserInput {

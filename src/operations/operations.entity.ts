@@ -107,10 +107,6 @@ export class OperationsRView {
 
   @Field()
   @ViewColumn()
-  Consecutive: number;
-
-  @Field()
-  @ViewColumn()
   IdOperationType: number;
     
   @Field()
@@ -156,4 +152,8 @@ export class OperationsRView {
   @Field()
   @ViewColumn()
   AmountOut?: number;
+    
+  @Field()
+  @ViewColumn()
+  Bonus?: number;
 }

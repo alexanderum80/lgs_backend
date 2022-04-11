@@ -20,6 +20,7 @@ import { CageModule } from './cage/cage.module';
 import { PaymentsModule } from './payments/payments.module';
 import { TrackingModule } from './tracking/tracking.module';
 import { SessionsModule } from './sessions/sessions.module';
+import { CreditRequestModule } from './credit-request/credit-request.module';
 import 'dotenv/config';
 
 @Module({
@@ -59,6 +60,7 @@ import 'dotenv/config';
     PaymentsModule,
     TrackingModule,
     SessionsModule,
+    CreditRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

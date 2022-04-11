@@ -157,10 +157,18 @@ export class OperationsService {
 
   async finishOperation(idOperation: number): Promise<number> {
     try {
-      return new Promise<number>((resolve, reject) => {
-        this.operationRRepository.update({ IdOperation: idOperation}, { Finished: true }, ).then(result => {
-          this._insertOperationInCage(idOperation).then(() => {
-            resolve(result.affected);
+      return new Promise<number>(async (resolve, reject) => {
+        getManager().findOne(OperationsRView, { IdOperation: idOperation }).then(res => {
+          if (res.IdOperationType === EOperations.CREDIT && res.AmountIn !== res.AmountOut) {
+            return reject('Approved Amount do not match with Delivered Amount. Fix it.');
+          }
+  
+          this.operationRRepository.update({ IdOperation: idOperation}, { Finished: true }, ).then(result => {
+            this._insertOperationInCage(idOperation).then(() => {
+              resolve(result.affected);
+            }).catch(err => {
+              reject(err.message || err);
+            });
           }).catch(err => {
             reject(err.message || err);
           });
