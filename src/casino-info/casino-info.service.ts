@@ -3,11 +3,13 @@ import { CasinoInfoInput } from './casino-info.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { SessionsService } from 'src/sessions/sessions.service';
 
 @Injectable()
 export class CasinoInfoService {
   constructor(
-    @InjectRepository(CasinoInfoEntity) private readonly casinoRepository: Repository<CasinoInfoEntity>
+    @InjectRepository(CasinoInfoEntity) private readonly casinoRepository: Repository<CasinoInfoEntity>,
+    private _sessionSvc: SessionsService
   ) {}
 
   async find(): Promise<CasinoInfoEntity> {
@@ -68,6 +70,8 @@ export class CasinoInfoService {
 
   async updateCasinoState(idState: number, openingDate?: Date): Promise<number> {
     try {
+      const closeDate = openingDate ? null : new Date();
+
       const setProperties = {
         IdState: idState,
       };
@@ -80,10 +84,13 @@ export class CasinoInfoService {
           .update()
           .set(setProperties)
         .execute()
-        .then(result => {
-             resolve(result.affected);
+        .then(async result => {
+          // create new or update latest session
+          await this._sessionSvc.updateLatestSession(openingDate, closeDate);
+
+          resolve(result.affected);
          }).catch(err => {
-             reject(err.message || err);
+          reject(err.message || err);
          });
       });
     } catch (err) {

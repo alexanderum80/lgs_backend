@@ -109,6 +109,12 @@ type CoinEntity {
   Enabled: Boolean!
 }
 
+type SessionsEntity {
+  IdSession: Int!
+  OpenDate: DateTime!
+  CloseDate: DateTime!
+}
+
 type CasinoInfoEntity {
   Id: Float!
   Name: String!
@@ -251,10 +257,21 @@ type DropResultsView {
   Amount: Float!
 }
 
-type SessionsEntity {
-  IdSession: Int!
-  OpenDate: DateTime!
-  CloseDate: DateTime!
+type MasterTrackingView {
+  IdSession: Float!
+  OpenDate: DateTime
+  CloseDate: DateTime
+  IdPlayer: Float!
+  PlayerName: String!
+  TimeIn: DateTime!
+  TimeOut: DateTime
+  SRD: Float!
+  USD: Float!
+  EUR: Float!
+  TotalSRD: Float!
+  TotalOutSRD: Float!
+  WinLoss: Float!
+  TotalCreditsSRD: Float!
 }
 
 type CreditRequestEntity {
@@ -290,6 +307,8 @@ type Query {
   getCoin(id: Int!): CoinEntity!
   getCasinoInfo: CasinoInfoEntity!
   getCasinoState: Int!
+  getSessions: [SessionsEntity!]!
+  getSession(id: Int!): SessionsEntity!
   getCities: [CitiesEntity!]!
   getCitiesByCountry(idCountry: Int!): [CitiesEntity!]!
   getCity(id: Int!): CitiesEntity!
@@ -309,16 +328,12 @@ type Query {
   getPaymentInstrument(id: Int!): PaymentInstrumentsEntity!
   getPayments: [PaymentsView!]!
   getPayment(id: Int!): PaymentsEntity!
-  currentPlayersStatus: [PlayerStatusView!]!
-  currentPlayerStatus(idPlayer: Int!): [PlayerStatusView!]!
-  currentPlayersStatusCheck: [PlayerStatusCheckView!]!
-  currentPlayerStatusCheck(idPlayer: Int!): [PlayerStatusCheckView!]!
-  currentPlayersTracking: [PlayerTrackingView!]!
-  currentPlayerTracking(idPlayer: Int!): [PlayerTrackingView!]!
+  currentPlayersStatus(idPlayer: Int): [PlayerStatusView!]!
+  currentPlayersStatusCheck(idPlayer: Int): [PlayerStatusCheckView!]!
+  masterTracking(idPlayer: Int, finalSession: Int!, initSession: Int!): [MasterTrackingView!]!
+  currentPlayersTracking(idPlayer: Int): [PlayerTrackingView!]!
   finalPlayerSessions(idPlayer: Int, finalSession: Int!, initSession: Int!): [FinalPlayerSessions!]!
   dropResults(finalSession: Int!, initSession: Int!): [DropResultsView!]!
-  getSessions: [SessionsEntity!]!
-  getSession(id: Int!): SessionsEntity!
   creditsRequest: [CreditRequestEntity!]!
   pendingCreditsRequest: [CreditRequestEntity!]!
   creditRequest(id: Int!): CreditRequestEntity!

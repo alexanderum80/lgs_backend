@@ -6,7 +6,7 @@ import { ViewColumn, ViewEntity } from 'typeorm';
 export class PlayerStatusView {
   @Field(() => Int)
   @ViewColumn()
-  IdPlayer: number;
+  IdPlayer?: number;
 
   @Field()
   @ViewColumn()
@@ -38,7 +38,7 @@ export class PlayerStatusView {
 export class PlayerStatusCheckView {
   @Field(() => Int)
   @ViewColumn()
-  IdPlayer: number;
+  IdPlayer?: number;
 
   @Field()
   @ViewColumn()
@@ -82,7 +82,7 @@ export class PlayerTrackingView {
   
   @Field()
   @ViewColumn()
-  IdPlayer: number;
+  IdPlayer?: number;
     
   @Field()
   @ViewColumn()
@@ -179,4 +179,65 @@ export class DropResultsView {
   @Field()
   @ViewColumn()
   Amount: number;
+}
+
+
+@ObjectType()
+@ViewEntity('vw_MasterTracking')
+export class MasterTrackingView {
+  @Field()
+  @ViewColumn()
+  IdSession: number;
+
+  @Field({ nullable: true })
+  @ViewColumn()
+  OpenDate: Date;
+
+  @Field({ nullable: true })
+  @ViewColumn()
+  CloseDate?: Date;
+   
+  @Field()
+  @ViewColumn()
+  IdPlayer: number;
+    
+  @Field()
+  @ViewColumn()
+  PlayerName: string;
+
+  @Field()
+  @ViewColumn()
+  TimeIn: Date;
+
+  @Field({ nullable: true })
+  @ViewColumn()
+  TimeOut?: Date;
+        
+  @Field()
+  @ViewColumn()
+  SRD: number;
+          
+  @Field()
+  @ViewColumn()
+  USD: number;
+          
+  @Field()
+  @ViewColumn()
+  EUR: number;
+          
+  @Field()
+  @ViewColumn()
+  TotalSRD: number;
+            
+  @Field()
+  @ViewColumn()
+  TotalOutSRD: number;
+          
+  @Field()
+  @ViewColumn()
+  WinLoss: number;
+          
+  @Field()
+  @ViewColumn()
+  TotalCreditsSRD: number;
 }

@@ -220,6 +220,7 @@ export class OperationsService {
       const tables = await this._tablesSvc.findAll();
 
       return new Promise<boolean>(async (resolve, reject) => {
+        // save initialization by cage
         for (let index = 0; index < tables.length; index++) {
           const t = tables[index];
  
@@ -259,12 +260,14 @@ export class OperationsService {
 
         const operations = await this.findAllToday(EOperations.INITIALIZING);
         
+        // finish all initialization operations
         operations.forEach(async o => {
           await getManager().getRepository(OperationsREntity).createQueryBuilder()
             .update()
             .set({ Date: operationDate, Finished: true })
             .where('IdOperation = :idOperation', { idOperation: o.IdOperation})
           .execute().then(async res => {
+            // save all operations un cage
             await this._insertOperationInCage(o.IdOperation).catch(err => {
               reject(err.message || err);
             });
@@ -273,6 +276,7 @@ export class OperationsService {
           })
         });
 
+        // update casino information
         await this._casinoInfoSvc.updateCasinoState(EOperations.OPEN, operationDate).then(() => {
           resolve(true);
         }).catch(err => {
