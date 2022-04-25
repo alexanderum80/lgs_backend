@@ -23,14 +23,14 @@ export class TablesGameResolver {
 
   @Mutation(() => TablesGameEntity)
   @UseGuards(new AuthGuard())
-  async createTableGame(@Args('TableGameInput') TableGameInput: TableGameInput): Promise<TablesGameEntity> {
-    return this.TablesGameService.create(TableGameInput);
+  async createTableGame(@Args('tableGameInput') tableGameInput: TableGameInput): Promise<TablesGameEntity> {
+    return this.TablesGameService.create(tableGameInput);
   }
 
   @Mutation(() => TablesGameEntity)
   @UseGuards(new AuthGuard())
-  async updateTableGame(@Args('TableGameInput') TableGameInput: TableGameInput): Promise<TablesGameEntity> {
-    return this.TablesGameService.update(TableGameInput);
+  async updateTableGame(@Args('tableGameInput') tableGameInput: TableGameInput): Promise<TablesGameEntity> {
+    return this.TablesGameService.update(tableGameInput);
   }
 
   @Mutation(() => Number)

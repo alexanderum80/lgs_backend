@@ -363,8 +363,8 @@ type Mutation {
   createCity(cityInput: CityInput!): CitiesEntity!
   updateCity(cityInput: CityInput!): CitiesEntity!
   removeCity(IDS: [Int!]!): Int!
-  createTableGame(TableGameInput: TableGameInput!): TablesGameEntity!
-  updateTableGame(TableGameInput: TableGameInput!): TablesGameEntity!
+  createTableGame(tableGameInput: TableGameInput!): TablesGameEntity!
+  updateTableGame(tableGameInput: TableGameInput!): TablesGameEntity!
   deleteTableGame(IDs: [Int!]!): Float!
   createTable(tableInput: TableInput!): TablesEntity!
   updateTable(tableInput: TableInput!): TablesEntity!
