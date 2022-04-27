@@ -137,7 +137,6 @@ type CitiesEntity {
 type TablesGameEntity {
   IdGame: Int!
   Name: String!
-  StartAmount: Float!
 }
 
 type PaymentsEntity {
@@ -451,7 +450,6 @@ input CityInput {
 input TableGameInput {
   IdGame: Int!
   Name: String!
-  StartAmount: Float!
 }
 
 input TableInput {

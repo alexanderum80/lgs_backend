@@ -7,7 +7,4 @@ export class TableGameInput {
 
   @Field()
   Name: string;
-    
-  @Field()
-  StartAmount: number;
 }

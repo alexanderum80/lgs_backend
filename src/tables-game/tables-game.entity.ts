@@ -11,8 +11,4 @@ export class TablesGameEntity {
   @Field()
   @Column()
   Name: string;
-      
-  @Field()
-  @Column()
-  StartAmount: number;
 }

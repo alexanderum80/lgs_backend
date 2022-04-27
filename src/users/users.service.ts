@@ -48,7 +48,7 @@ export class UsersService {
             return new Promise<UsersEntity>((resolve, reject) => {
                 this.usersRepository.query(queryAuthenticate).then(async response => {
                     if (!response.length) {
-                        reject('INVALID username o password.');
+                        return reject('INVALID username o password.');
                     } else {    
                         userInfo = response[0];
 
