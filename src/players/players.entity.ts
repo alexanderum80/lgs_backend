@@ -27,10 +27,6 @@ export class PlayersEntity {
 
   @Field({ nullable: true })
   @Column()
-  Passport_Number?: string;
-
-  @Field({ nullable: true })
-  @Column()
   Note?: string;
 
   @Field({ nullable: true })

@@ -85,7 +85,6 @@ type PlayersEntity {
   LastName: String!
   StartDate: DateTime!
   Personal_Id: String
-  Passport_Number: String
   Note: String
   CellPhone: String
   Enabled: Boolean!
@@ -410,7 +409,6 @@ input PlayerInput {
   LastName: String!
   StartDate: DateTime
   Personal_Id: String!
-  Passport_Number: String!
   Note: String!
   CellPhone: String!
   Enabled: Boolean!

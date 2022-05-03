@@ -19,9 +19,6 @@ export class PlayerInput extends PlayersEntity {
     Personal_Id: string;
   
     @Field()
-    Passport_Number?: string;
-  
-    @Field()
     Note?: string;
   
     @Field()
