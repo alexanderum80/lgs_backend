@@ -387,7 +387,7 @@ type Mutation {
   removeCage(idOperation: Int!): Float!
   createPayment(paymentInput: PaymentInput!): PaymentsEntity!
   updatePayment(paymentInput: PaymentInput!): PaymentsEntity!
-  removePayment(IDs: [Int!]!): Int!
+  deletePayment(IDs: [Int!]!): Int!
   approveCreditRequest(idCredit: Int!): Int!
   denyCreditRequest(idCredit: Int!): Int!
 }

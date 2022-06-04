@@ -30,7 +30,6 @@ export class UsersService {
         Name: '',
         LastName: '',
         Psw: '',
-        // Roles: [{ IdRole: 1, IdUser: 0 }],
         StartDate: new Date(),
         Enabled: true,
         Deleted: false,
@@ -42,6 +41,9 @@ export class UsersService {
           '$2a$12$lgFKnAgBBMluWmZd7yX8BuZ8RLZFdL5xDG0ABt.rMoHqrT5S/3i/2',
         );
         if (res) {
+          const _roles = [{ IdRole: 1, IdUser: 0 }];
+          Object.assign(userInfo, { UserRoles: _roles });
+
           const token = this.createToken(userInfo);
           return { ...userInfo, Token: token };
         }

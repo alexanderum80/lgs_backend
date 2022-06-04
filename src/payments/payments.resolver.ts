@@ -35,7 +35,7 @@ export class PaymentsResolver {
 
   @Mutation(() => Int)
   @UseGuards(new AuthGuard())
-  removePayment(@Args('IDs', { type: () => [Int] }) IDs: number[]) {
-    return this.paymentsService.remove(IDs);
+  deletePayment(@Args('IDs', { type: () => [Int] }) IDs: number[]) {
+    return this.paymentsService.delete(IDs);
   }
 }

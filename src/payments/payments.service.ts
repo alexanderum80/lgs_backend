@@ -83,7 +83,7 @@ export class PaymentsService {
     }
   }
 
-  async remove(IDs: number[]): Promise<number> {
+  async delete(IDs: number[]): Promise<number> {
     try {
       return new Promise<number>((resolve, reject) => {
         this.paymentsRepository

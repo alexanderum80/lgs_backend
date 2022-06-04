@@ -17,7 +17,6 @@
             ],
             "console": "integratedTerminal",
             "restart": true,
-            "protocol": "auto",
             "autoAttachChildProcesses": true
         },
     ]
