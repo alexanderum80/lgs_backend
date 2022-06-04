@@ -6,6 +6,6 @@ import { CitiesResolver } from './cities.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CitiesEntity])],
-  providers: [CitiesResolver, CitiesService]
+  providers: [CitiesResolver, CitiesService],
 })
 export class CitiesModule {}

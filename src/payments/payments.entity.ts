@@ -1,5 +1,13 @@
-import { CoinEntity } from './../coins/coins.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity, JoinColumn } from 'typeorm';
+import { CurrencyEntity } from './../currency/currency.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  ViewColumn,
+  ViewEntity,
+  JoinColumn,
+} from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
@@ -11,10 +19,6 @@ export class PaymentsEntity {
 
   @Field()
   @Column()
-  Description: string;
-
-  @Field()
-  @Column()
   Denomination: number;
 
   @Field(() => Int)
@@ -23,58 +27,62 @@ export class PaymentsEntity {
 
   @Field(() => Int)
   @Column()
-  IdCoin: number;
+  IdCurrency: number;
 
-  @Field(() => CoinEntity)
-  @ManyToOne(() => CoinEntity, coin => coin.IdCoin)
-  @JoinColumn({ name: 'IdCoin', referencedColumnName: 'IdCoin' })
-  Coin: CoinEntity;
+  @Field(() => CurrencyEntity)
+  @ManyToOne(() => CurrencyEntity, (currency) => currency.IdCurrency)
+  @JoinColumn({ name: 'IdCurrency', referencedColumnName: 'IdCurrency' })
+  Currency: CurrencyEntity;
 
   @Field(() => Boolean)
   @Column()
   Enabled: boolean;
+
+  @Field({ nullable: true })
+  @Column({ type: 'bytea' })
+  Picture?: string;
 }
 
 @ObjectType()
 @ViewEntity('vw_Payments')
 export class PaymentsView {
-    @Field()
-    @ViewColumn()
-    IdPayment: number;
+  @Field()
+  @ViewColumn()
+  IdPayment: number;
 
-    @Field()
-    @ViewColumn()
-    Description: string;
+  @Field()
+  @ViewColumn()
+  Description: string;
 
-    @Field()
-    @ViewColumn()
-    Denomination: number;
+  @Field()
+  @ViewColumn()
+  Denomination: number;
 
-    @Field()
-    @ViewColumn()
-    IdPayInstr: number;
+  @Field()
+  @ViewColumn()
+  IdPayInstr: number;
 
-    @Field()
-    @ViewColumn()
-    IdCoin: number;
+  @Field()
+  @ViewColumn()
+  IdCurrency: number;
 
-    @Field()
-    @ViewColumn()
-    Enabled: boolean;
-    
-    @Field()
-    @ViewColumn()
-    PayInstrument: string;
+  @Field()
+  @ViewColumn()
+  Enabled: boolean;
 
-    @Field()
-    @ViewColumn()
-    Coin: string;
-    
-    @Field()
-    @ViewColumn()
-    Rate: number;
-       
-    @Field()
-    @ViewColumn()
-    PaymentName: string;
+  @Field()
+  @ViewColumn()
+  PayInstrument: string;
+
+  @Field()
+  @ViewColumn()
+  Currency: string;
+
+  @Field()
+  @ViewColumn()
+  Rate: number;
+
+  @Field()
+  @ViewColumn()
+  PaymentName: string;
 }

@@ -6,6 +6,6 @@ import { TablesGameResolver } from './tables-game.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TablesGameEntity])],
-  providers: [TablesGameResolver, TablesGameService]
+  providers: [TablesGameResolver, TablesGameService],
 })
 export class TablesGameModule {}

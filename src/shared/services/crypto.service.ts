@@ -6,11 +6,11 @@ const cryptr = new Cryptr(secretKey);
 
 @Injectable()
 export class CryptoService {
-    async encrypt(text) {
-        return cryptr.encrypt(text);
-    }
+  async encrypt(text) {
+    return cryptr.encrypt(text);
+  }
 
-    async decrypt(text) {
-        return cryptr.decrypt(text);
-    }
+  async decrypt(text) {
+    return cryptr.decrypt(text);
+  }
 }

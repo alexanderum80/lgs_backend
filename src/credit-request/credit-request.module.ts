@@ -6,6 +6,6 @@ import { CreditRequestResolver } from './credit-request.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CreditRequestEntity])],
-  providers: [CreditRequestResolver, CreditRequestService]
+  providers: [CreditRequestResolver, CreditRequestService],
 })
 export class CreditRequestModule {}

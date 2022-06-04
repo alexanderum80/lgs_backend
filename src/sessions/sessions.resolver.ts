@@ -16,8 +16,9 @@ export class SessionsResolver {
 
   @Query(() => SessionsEntity, { name: 'getSession' })
   @UseGuards(new AuthGuard())
-  async findOne(@Args('id', { type: () => Int }) id: number): Promise<SessionsEntity> {
+  async findOne(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<SessionsEntity> {
     return this.sessionsService.findOne(id);
   }
-
 }

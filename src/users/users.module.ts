@@ -7,8 +7,12 @@ import { UsersService } from './users.service';
 import { UsersEntity, UsersLogEntity } from './users.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UsersEntity, UsersLogEntity]), UsersRolesModule, SharedModule],
+  imports: [
+    TypeOrmModule.forFeature([UsersEntity, UsersLogEntity]),
+    UsersRolesModule,
+    SharedModule,
+  ],
   providers: [UsersResolver, UsersService],
-  exports: [UsersService]
+  exports: [UsersService],
 })
 export class usersModule {}

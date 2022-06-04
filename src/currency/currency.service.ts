@@ -1,19 +1,20 @@
-import { CreditRequestEntity } from './credit-request.entity';
+import { CurrencyEntity } from './currency.entity';
+import { CurrencyInput } from './currency.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getManager } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class CreditRequestService {
+export class CurrencyService {
   constructor(
-    @InjectRepository(CreditRequestEntity)
-    private readonly creditRequestRepository: Repository<CreditRequestEntity>,
+    @InjectRepository(CurrencyEntity)
+    private readonly currencyRepository: Repository<CurrencyEntity>,
   ) {}
 
-  async findAll(): Promise<CreditRequestEntity[]> {
+  async findAll(): Promise<CurrencyEntity[]> {
     try {
-      return new Promise<CreditRequestEntity[]>((resolve, reject) => {
-        this.creditRequestRepository
+      return new Promise<CurrencyEntity[]>((resolve, reject) => {
+        this.currencyRepository
           .find()
           .then((result) => {
             resolve(result);
@@ -27,30 +28,10 @@ export class CreditRequestService {
     }
   }
 
-  async findAllPending(): Promise<CreditRequestEntity[]> {
+  async findOne(id: number): Promise<CurrencyEntity> {
     try {
-      return new Promise<CreditRequestEntity[]>((resolve, reject) => {
-        this.creditRequestRepository
-          .find({
-            where: { Passed: false, Cancelled: false },
-            relations: ['Player'],
-          })
-          .then((result) => {
-            resolve(result);
-          })
-          .catch((err) => {
-            reject(err.message || err);
-          });
-      });
-    } catch (err) {
-      return Promise.reject(err.message || err);
-    }
-  }
-
-  async findOne(id: number): Promise<CreditRequestEntity> {
-    try {
-      return new Promise<CreditRequestEntity>((resolve, reject) => {
-        this.creditRequestRepository
+      return new Promise<CurrencyEntity>((resolve, reject) => {
+        this.currencyRepository
           .findOne(id)
           .then((result) => {
             resolve(result);
@@ -64,13 +45,15 @@ export class CreditRequestService {
     }
   }
 
-  async approve(id: number): Promise<number> {
+  async create(currencyInput: CurrencyInput): Promise<CurrencyEntity> {
     try {
-      return new Promise<number>((resolve, reject) => {
-        getManager()
-          .query(`CALL public.sp_lgs_insert_credits_from_request(${id})`)
+      delete currencyInput.IdCurrency;
+
+      return new Promise<CurrencyEntity>((resolve, reject) => {
+        this.currencyRepository
+          .save(currencyInput)
           .then((result) => {
-            resolve(result.affected);
+            resolve(result);
           })
           .catch((err) => {
             reject(err.message || err);
@@ -81,11 +64,28 @@ export class CreditRequestService {
     }
   }
 
-  async deny(id: number): Promise<number> {
+  async update(currencyInput: CurrencyInput): Promise<CurrencyEntity> {
+    try {
+      return new Promise<CurrencyEntity>((resolve, reject) => {
+        this.currencyRepository
+          .save(currencyInput)
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }
+  }
+
+  async delete(IDs: number[]): Promise<number> {
     try {
       return new Promise<number>((resolve, reject) => {
-        this.creditRequestRepository
-          .update({ IdCredit: id }, { Cancelled: true })
+        this.currencyRepository
+          .delete(IDs)
           .then((result) => {
             resolve(result.affected);
           })

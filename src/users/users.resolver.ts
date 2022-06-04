@@ -8,86 +8,82 @@ import { AuthGuard } from '../shared/helpers/auth.guard';
 
 @Resolver(() => UsersEntity)
 export class UsersResolver {
-    constructor(
-        protected readonly _usersService: UsersService
-    ) {}
+  constructor(protected readonly _usersService: UsersService) {}
 
-    @Query(() => UsersEntity)
-    async authenticateUser(
-        @Args('user') user: string,
-        @Args('passw') passw: string
-    ): Promise<UsersEntity> {
-        return this._usersService.authenticate(user, passw);
-    }
+  @Query(() => UsersEntity)
+  async authenticateUser(
+    @Args('user') user: string,
+    @Args('passw') passw: string,
+  ): Promise<UsersEntity> {
+    return this._usersService.authenticate(user, passw);
+  }
 
-    @Query(() => Boolean)
-    @UseGuards(new AuthGuard())
-    async logout(
-        @Context(DEFAULT_GRAPHQL_CONTEXT) user: UsersEntity,
-    ): Promise<boolean> {
-        return this._usersService.logout(user.Id);
-    }
+  @Query(() => Boolean)
+  @UseGuards(new AuthGuard())
+  async logout(
+    @Context(DEFAULT_GRAPHQL_CONTEXT) user: UsersEntity,
+  ): Promise<boolean> {
+    return this._usersService.logout(user.Id);
+  }
 
-    @Query(() => UsersEntity)
-    @UseGuards(new AuthGuard())
-    async refreshToken(
-        @Args('user') user: string,
-        @Args('passw') passw: string
-    ): Promise<UsersEntity> {
-        return this._usersService.refreshToken(user, passw);
-    }
+  @Query(() => UsersEntity)
+  @UseGuards(new AuthGuard())
+  async refreshToken(
+    @Args('user') user: string,
+    @Args('passw') passw: string,
+  ): Promise<UsersEntity> {
+    return this._usersService.refreshToken(user, passw);
+  }
 
-    @Query(() => [UsersEntity])
-    @UseGuards(new AuthGuard())
-    async getAllUsers(): Promise<UsersEntity[]> {
-        return this._usersService.findAll();
-    }
+  @Query(() => [UsersEntity])
+  @UseGuards(new AuthGuard())
+  async getAllUsers(): Promise<UsersEntity[]> {
+    return this._usersService.findAll();
+  }
 
-    @Query(() => UsersEntity)
-    @UseGuards(new AuthGuard())
-    async getUserById(
-        @Args({ name: 'id', type: () => Int }) id: number
-    ): Promise<UsersEntity> {
-        return this._usersService.findOne(id);
-    }
+  @Query(() => UsersEntity)
+  @UseGuards(new AuthGuard())
+  async getUserById(
+    @Args({ name: 'id', type: () => Int }) id: number,
+  ): Promise<UsersEntity> {
+    return this._usersService.findOne(id);
+  }
 
-    @Query(() => UsersEntity)
-    @UseGuards(new AuthGuard())
-    async getUserByName(
-        @Args('name') name: string
-    ): Promise<UsersEntity> {
-        return this._usersService.findByName(name);
-    }
+  @Query(() => UsersEntity)
+  @UseGuards(new AuthGuard())
+  async getUserByName(@Args('name') name: string): Promise<UsersEntity> {
+    return this._usersService.findByName(name);
+  }
 
-    @Mutation(() => UsersEntity)
-    @UseGuards(new AuthGuard())
-    async createUser(
-        @Args('userInfo') userInfo: UserInput
-    ): Promise<UsersEntity> {
-        return this._usersService.create(userInfo);
-    }
+  @Mutation(() => UsersEntity)
+  @UseGuards(new AuthGuard())
+  async createUser(
+    @Args('userInfo') userInfo: UserInput,
+  ): Promise<UsersEntity> {
+    return this._usersService.create(userInfo);
+  }
 
-    @Mutation(() => UsersEntity)
-    @UseGuards(new AuthGuard())
-    async updateUser(
-        @Args('userInfo') userInfo: UserInput
-    ): Promise<UsersEntity> {
-        return this._usersService.update(userInfo);
-    }
+  @Mutation(() => UsersEntity)
+  @UseGuards(new AuthGuard())
+  async updateUser(
+    @Args('userInfo') userInfo: UserInput,
+  ): Promise<UsersEntity> {
+    return this._usersService.update(userInfo);
+  }
 
-    @Mutation(() => Number)
-    @UseGuards(new AuthGuard())
-    async deleteUser(
-        @Args({ name: 'IDs', type: () => [Int] }) IDs: number[]
-    ): Promise<Number> {
-        return this._usersService.delete(IDs);
-    }
+  @Mutation(() => Number)
+  @UseGuards(new AuthGuard())
+  async deleteUser(
+    @Args({ name: 'IDs', type: () => [Int] }) IDs: number[],
+  ): Promise<number> {
+    return this._usersService.delete(IDs);
+  }
 
-    @Mutation(() => Number)
-    @UseGuards(new AuthGuard())
-    async recoverUser(
-        @Args({ name: 'id', type: () => Int }) id: number
-    ): Promise<Number> {
-        return this._usersService.recover(id);
-    }
+  @Mutation(() => Number)
+  @UseGuards(new AuthGuard())
+  async recoverUser(
+    @Args({ name: 'id', type: () => Int }) id: number,
+  ): Promise<number> {
+    return this._usersService.recover(id);
+  }
 }

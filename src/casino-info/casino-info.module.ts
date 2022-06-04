@@ -8,6 +8,6 @@ import { CasinoInfoResolver } from './casino-info.resolver';
 @Module({
   imports: [TypeOrmModule.forFeature([CasinoInfoEntity]), SessionsModule],
   providers: [CasinoInfoResolver, CasinoInfoService],
-  exports: [CasinoInfoService]
+  exports: [CasinoInfoService],
 })
 export class CasinoInfoModule {}

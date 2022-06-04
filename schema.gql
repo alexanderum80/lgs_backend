@@ -32,6 +32,17 @@ type UsersRolesEntity {
   Roles: RolesEntity!
 }
 
+type PlayersCategoryEntity {
+  IdCategory: Int!
+  Description: String!
+}
+
+type CountriesEntity {
+  IdCountry: Int!
+  Name: String!
+  Enabled: Boolean!
+}
+
 type OperationsEntity {
   IdOperation: Int!
   OperationName: String!
@@ -83,27 +94,24 @@ type PlayersEntity {
   IdPlayer: Int!
   Name: String!
   LastName: String!
-  StartDate: DateTime!
+  StartDate: DateTime
   Personal_Id: String
   Note: String
   CellPhone: String
   Enabled: Boolean!
   IdCountry: Int
+  Country: CountriesEntity
   Deleted: Boolean!
   DateOfBirth: DateTime
   Status: Int!
-  StatusInfo: OperationsEntity!
+  StatusInfo: OperationsEntity
+  IdCategory: Int!
+  Category: PlayersCategoryEntity!
 }
 
-type CountriesEntity {
-  IdCountry: Int!
-  Name: String!
-  Enabled: Boolean!
-}
-
-type CoinEntity {
-  IdCoin: Int!
-  Coin: String!
+type CurrencyEntity {
+  IdCurrency: Int!
+  Currency: String!
   Rate: Float!
   Enabled: Boolean!
 }
@@ -140,12 +148,12 @@ type TablesGameEntity {
 
 type PaymentsEntity {
   IdPayment: Int!
-  Description: String!
   Denomination: Float!
   IdPayInstr: Int!
-  IdCoin: Int!
-  Coin: CoinEntity!
+  IdCurrency: Int!
+  Currency: CurrencyEntity!
   Enabled: Boolean!
+  Picture: String
 }
 
 type PaymentsView {
@@ -153,10 +161,10 @@ type PaymentsView {
   Description: String!
   Denomination: Float!
   IdPayInstr: Float!
-  IdCoin: Float!
+  IdCurrency: Float!
   Enabled: Boolean!
   PayInstrument: String!
-  Coin: String!
+  Currency: String!
   Rate: Float!
   PaymentName: String!
 }
@@ -301,8 +309,8 @@ type Query {
   getPlayer(id: Int!): PlayersEntity!
   getCountries: [CountriesEntity!]!
   getCountry(id: Int!): CountriesEntity!
-  getCoins: [CoinEntity!]!
-  getCoin(id: Int!): CoinEntity!
+  getCurrencies: [CurrencyEntity!]!
+  getCurrency(id: Int!): CurrencyEntity!
   getCasinoInfo: CasinoInfoEntity!
   getCasinoState: Int!
   getSessions: [SessionsEntity!]!
@@ -335,6 +343,7 @@ type Query {
   creditsRequest: [CreditRequestEntity!]!
   pendingCreditsRequest: [CreditRequestEntity!]!
   creditRequest(id: Int!): CreditRequestEntity!
+  getPlayersCategory: [PlayersCategoryEntity!]!
 }
 
 type Mutation {
@@ -354,9 +363,9 @@ type Mutation {
   createCountry(countryInput: CountryInput!): CountriesEntity!
   updateCountry(countryInput: CountryInput!): CountriesEntity!
   deleteCountry(IDs: [Int!]!): Int!
-  createCoin(coinInput: CoinInput!): CoinEntity!
-  updateCoin(coinInput: CoinInput!): CoinEntity!
-  deleteCoin(IDs: [Int!]!): Int!
+  createCurrency(currencyInput: CurrencyInput!): CurrencyEntity!
+  updateCurrency(currencyInput: CurrencyInput!): CurrencyEntity!
+  deleteCurrency(IDs: [Int!]!): Int!
   saveCasinoInfo(casinoInfoInput: CasinoInfoInput!): CasinoInfoEntity!
   createCity(cityInput: CityInput!): CitiesEntity!
   updateCity(cityInput: CityInput!): CitiesEntity!
@@ -408,12 +417,13 @@ input PlayerInput {
   Name: String!
   LastName: String!
   StartDate: DateTime
-  Personal_Id: String!
-  Note: String!
-  CellPhone: String!
+  Personal_Id: String
+  Note: String
+  CellPhone: String
   Enabled: Boolean!
   IdCountry: Int
-  DateOfBirth: DateTime!
+  DateOfBirth: DateTime
+  IdCategory: Int!
 }
 
 input CountryInput {
@@ -422,9 +432,9 @@ input CountryInput {
   Enabled: Boolean!
 }
 
-input CoinInput {
-  IdCoin: Int!
-  Coin: String!
+input CurrencyInput {
+  IdCurrency: Int!
+  Currency: String!
   Rate: Float!
   Enabled: Boolean!
 }
@@ -510,9 +520,9 @@ input CageInput {
 
 input PaymentInput {
   IdPayment: Int!
-  Description: String!
   Denomination: Float!
   IdPayInstr: Int!
-  IdCoin: Int!
+  IdCurrency: Int!
   Enabled: Boolean!
+  Picture: String
 }

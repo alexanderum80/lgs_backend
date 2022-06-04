@@ -6,6 +6,6 @@ import { PlayersResolver } from './players.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PlayersEntity])],
-  providers: [PlayersResolver, PlayersService]
+  providers: [PlayersResolver, PlayersService],
 })
 export class PlayersModule {}

@@ -7,6 +7,6 @@ import { CageResolver } from './cage.resolver';
 @Module({
   imports: [TypeOrmModule.forFeature([CageEntity])],
   providers: [CageResolver, CageService],
-  exports: [CageService]
+  exports: [CageService],
 })
 export class CageModule {}

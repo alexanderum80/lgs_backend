@@ -9,7 +9,7 @@ import { RolesModule } from './roles/roles.module';
 import { UsersRolesModule } from './users-roles/users-roles.module';
 import { PlayersModule } from './players/players.module';
 import { CountriesModule } from './countries/countries.module';
-import { CoinsModule } from './coins/coins.module';
+import { CurrencyModule } from './currency/currency.module';
 import { CasinoInfoModule } from './casino-info/casino-info.module';
 import { CitiesModule } from './cities/cities.module';
 import { TablesGameModule } from './tables-game/tables-game.module';
@@ -21,6 +21,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { TrackingModule } from './tracking/tracking.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { CreditRequestModule } from './credit-request/credit-request.module';
+import { PlayersCategoryModule } from './players-category/players-category.module';
 import 'dotenv/config';
 
 @Module({
@@ -28,11 +29,13 @@ import 'dotenv/config';
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
       playground: true,
-      context: ((req) => ({ headers: req.headers })),
+      context: (req) => ({ headers: req.headers }),
       formatError: (err) => {
-        err.message = err.message.replace('Unexpected error value: ', '').replace(/"/g, '');
+        err.message = err.message
+          .replace('Unexpected error value: ', '')
+          .replace(/"/g, '');
         return err;
-      }
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -49,7 +52,7 @@ import 'dotenv/config';
     UsersRolesModule,
     PlayersModule,
     CountriesModule,
-    CoinsModule,
+    CurrencyModule,
     CasinoInfoModule,
     CitiesModule,
     TablesGameModule,
@@ -61,6 +64,8 @@ import 'dotenv/config';
     TrackingModule,
     SessionsModule,
     CreditRequestModule,
+    CurrencyModule,
+    PlayersCategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

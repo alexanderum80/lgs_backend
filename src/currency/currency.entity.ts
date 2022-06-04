@@ -2,15 +2,15 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
-@Entity('LGS_Coins')
-export class CoinEntity {
+@Entity('LGS_Currency')
+export class CurrencyEntity {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
-  IdCoin: number;
+  IdCurrency: number;
 
   @Field()
   @Column()
-  Coin: string;
+  Currency: string;
 
   @Field()
   @Column()

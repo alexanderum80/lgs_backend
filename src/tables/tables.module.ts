@@ -7,6 +7,6 @@ import { TablesResolver } from './tables.resolver';
 @Module({
   imports: [TypeOrmModule.forFeature([TablesEntity, TablesInitValuesEntity])],
   providers: [TablesResolver, TablesService],
-  exports: [TablesService]
+  exports: [TablesService],
 })
 export class TablesModule {}

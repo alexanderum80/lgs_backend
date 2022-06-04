@@ -1,12 +1,12 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
 
 @InputType()
-export class CoinInput {
+export class CurrencyInput {
   @Field(() => Int)
-  IdCoin: number;
+  IdCurrency: number;
 
   @Field()
-  Coin: string;
+  Currency: string;
 
   @Field()
   Rate: number;

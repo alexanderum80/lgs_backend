@@ -6,6 +6,6 @@ import { CountriesResolver } from './countries.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CountriesEntity])],
-  providers: [CountriesResolver, CountriesService]
+  providers: [CountriesResolver, CountriesService],
 })
 export class CountriesModule {}

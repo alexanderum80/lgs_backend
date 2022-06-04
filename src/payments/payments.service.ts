@@ -7,7 +7,8 @@ import { getManager, Repository } from 'typeorm';
 @Injectable()
 export class PaymentsService {
   constructor(
-    @InjectRepository(PaymentsEntity) private readonly paymentsRepository: Repository<PaymentsEntity>
+    @InjectRepository(PaymentsEntity)
+    private readonly paymentsRepository: Repository<PaymentsEntity>,
   ) {}
 
   async findAll(): Promise<PaymentsView[]> {
@@ -15,29 +16,35 @@ export class PaymentsService {
       return new Promise<PaymentsView[]>((resolve, reject) => {
         const manager = getManager();
 
-        manager.find(PaymentsView).then(result => {
+        manager
+          .find(PaymentsView)
+          .then((result) => {
             resolve(result);
-        }).catch(err => {
+          })
+          .catch((err) => {
             reject(err.message || err);
-        });
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
-    }  
+    }
   }
 
   async findOne(id: number): Promise<PaymentsEntity> {
     try {
       return new Promise<PaymentsEntity>((resolve, reject) => {
-         this.paymentsRepository.findOne(id).then(result => {
-             resolve(result);
-         }).catch(err => {
-             reject(err.message || err);
-         });
+        this.paymentsRepository
+          .findOne(id)
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
-    }  
+    }
   }
 
   async create(paymentInput: PaymentInput): Promise<PaymentsEntity> {
@@ -45,42 +52,51 @@ export class PaymentsService {
       delete paymentInput.IdPayment;
 
       return new Promise<PaymentsEntity>((resolve, reject) => {
-         this.paymentsRepository.save(paymentInput).then(result => {
-             resolve(result);
-         }).catch(err => {
-             reject(err.message || err);
-         });
+        this.paymentsRepository
+          .save(paymentInput)
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
-    }  
+    }
   }
-  
+
   async update(PaymentInput: PaymentInput): Promise<PaymentsEntity> {
     try {
       return new Promise<PaymentsEntity>((resolve, reject) => {
-         this.paymentsRepository.save(PaymentInput).then(result => {
-             resolve(result);
-         }).catch(err => {
-             reject(err.message || err);
-         });
+        this.paymentsRepository
+          .save(PaymentInput)
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
-    }  
+    }
   }
 
   async remove(IDs: number[]): Promise<number> {
     try {
       return new Promise<number>((resolve, reject) => {
-         this.paymentsRepository.delete(IDs).then(result => {
-             resolve(result.affected);
-         }).catch(err => {
-             reject(err.message || err);
-         });
+        this.paymentsRepository
+          .delete(IDs)
+          .then((result) => {
+            resolve(result.affected);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
-    }  
+    }
   }
 }

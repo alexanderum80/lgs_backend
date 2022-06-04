@@ -18,7 +18,7 @@ export class PlayersResolver {
   @Query(() => PlayersEntity, { name: 'getPlayer' })
   @UseGuards(new AuthGuard())
   async findOne(
-    @Args('id', { type: () => Int }) id: number
+    @Args('id', { type: () => Int }) id: number,
   ): Promise<PlayersEntity> {
     return this.playersService.findOne(id);
   }
@@ -26,7 +26,7 @@ export class PlayersResolver {
   @Mutation(() => PlayersEntity)
   @UseGuards(new AuthGuard())
   async createPlayer(
-    @Args('playerInput') playerInput: PlayerInput
+    @Args('playerInput') playerInput: PlayerInput,
   ): Promise<PlayersEntity> {
     return this.playersService.create(playerInput);
   }
@@ -34,7 +34,7 @@ export class PlayersResolver {
   @Mutation(() => PlayersEntity)
   @UseGuards(new AuthGuard())
   async updatePlayer(
-    @Args('playerInput') playerInput: PlayerInput
+    @Args('playerInput') playerInput: PlayerInput,
   ): Promise<PlayersEntity> {
     return this.playersService.update(playerInput);
   }
@@ -42,14 +42,14 @@ export class PlayersResolver {
   @Mutation(() => Number)
   @UseGuards(new AuthGuard())
   async deletePlayer(
-    @Args('IDs', { type: () => [Int] }) IDs: number[]
+    @Args('IDs', { type: () => [Int] }) IDs: number[],
   ): Promise<number> {
     return this.playersService.delete(IDs);
   }
 
   @Mutation(() => Number)
   async recoverPlayer(
-    @Args('id', { type: () => Int }) id: number
+    @Args('id', { type: () => Int }) id: number,
   ): Promise<number> {
     return this.playersService.recover(id);
   }

@@ -17,7 +17,7 @@ export class TablesService {
   async findAll(): Promise<TablesEntity[]> {
     try {
       return new Promise<TablesEntity[]>((resolve, reject) => {
-         this.tablesRepository.find({ relations: ['TableGame', 'InitValues', 'InitValues.Payment', 'InitValues.Payment.Coin'] }).then(result => {
+         this.tablesRepository.find({ relations: ['TableGame', 'InitValues', 'InitValues.Payment', 'InitValues.Payment.Currency'] }).then(result => {
              resolve(result);
          }).catch(err => {
              reject(err.message || err);

@@ -22,14 +22,16 @@ export class CreditRequestResolver {
 
   @Query(() => CreditRequestEntity, { name: 'creditRequest' })
   @UseGuards(new AuthGuard())
-  async findOne(@Args('id', { type: () => Int }) id: number): Promise<CreditRequestEntity> {
+  async findOne(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<CreditRequestEntity> {
     return this.creditRequestService.findOne(id);
   }
 
   @Mutation(() => Int)
   @UseGuards(new AuthGuard())
   async approveCreditRequest(
-    @Args({name: 'idCredit', type: () => Int }) idCredit: number
+    @Args({ name: 'idCredit', type: () => Int }) idCredit: number,
   ): Promise<number> {
     return this.creditRequestService.approve(idCredit);
   }
@@ -37,7 +39,7 @@ export class CreditRequestResolver {
   @Mutation(() => Int)
   @UseGuards(new AuthGuard())
   async denyCreditRequest(
-    @Args({name: 'idCredit', type: () => Int }) idCredit: number
+    @Args({ name: 'idCredit', type: () => Int }) idCredit: number,
   ): Promise<number> {
     return this.creditRequestService.deny(idCredit);
   }

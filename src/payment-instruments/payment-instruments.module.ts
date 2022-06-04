@@ -6,6 +6,6 @@ import { PaymentInstrumentsResolver } from './payment-instruments.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PaymentInstrumentsEntity])],
-  providers: [PaymentInstrumentsResolver, PaymentInstrumentsService]
+  providers: [PaymentInstrumentsResolver, PaymentInstrumentsService],
 })
 export class PaymentInstrumentsModule {}

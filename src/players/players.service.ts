@@ -7,17 +7,21 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class PlayersService {
   constructor(
-    @InjectRepository(PlayersEntity) private readonly playersRepository: Repository<PlayersEntity>
+    @InjectRepository(PlayersEntity)
+    private readonly playersRepository: Repository<PlayersEntity>,
   ) {}
 
   async findAll(): Promise<PlayersEntity[]> {
     try {
       return new Promise<PlayersEntity[]>((resolve, reject) => {
-        this.playersRepository.find({ relations: ['StatusInfo']}).then(result => {
-          resolve(result);
-        }).catch(err => {
-          reject(err.message || err);
-        });
+        this.playersRepository
+          .find({ relations: ['Country', 'StatusInfo', 'Category'] })
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
@@ -27,17 +31,20 @@ export class PlayersService {
   async findOne(id: number): Promise<PlayersEntity> {
     try {
       return new Promise<PlayersEntity>((resolve, reject) => {
-        this.playersRepository.findOne(id).then(result => {
-          resolve(result);
-        }).catch(err => {
-          reject(err.message || err);
-        });
+        this.playersRepository
+          .findOne(id)
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
     }
   }
-  
+
   async create(playerInput: PlayerInput): Promise<PlayersEntity> {
     try {
       delete playerInput.IdPlayer;
@@ -45,11 +52,14 @@ export class PlayersService {
       playerInput.StartDate = new Date();
 
       return new Promise<PlayersEntity>((resolve, reject) => {
-        this.playersRepository.save(playerInput).then(result => {
-          resolve(result);
-        }).catch(err => {
-          reject(err.message || err);
-        });
+        this.playersRepository
+          .save(playerInput)
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
@@ -59,11 +69,14 @@ export class PlayersService {
   async update(playerInput: PlayerInput): Promise<PlayersEntity> {
     try {
       return new Promise<PlayersEntity>((resolve, reject) => {
-        this.playersRepository.save(playerInput).then(result => {
-          resolve(result);
-        }).catch(err => {
-          reject(err.message || err);
-        });
+        this.playersRepository
+          .save(playerInput)
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
@@ -73,38 +86,43 @@ export class PlayersService {
   async delete(ids: number[]): Promise<number> {
     try {
       return new Promise<number>((resolve, reject) => {
-        this.playersRepository.createQueryBuilder()
+        this.playersRepository
+          .createQueryBuilder()
           .update()
           .set({
-            Deleted: true
+            Deleted: true,
           })
-          .where('IdPlayer in (:...ids)', { ids})
+          .where('IdPlayer in (:...ids)', { ids })
           .execute()
-        .then(result => {
-          resolve(result.affected);
-        }).catch(err => {
-          reject(err.message || err);
-        });
+          .then((result) => {
+            resolve(result.affected);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);
     }
   }
-  
+
   async recover(id: number): Promise<number> {
     try {
       return new Promise<number>((resolve, reject) => {
-        this.playersRepository.createQueryBuilder()
+        this.playersRepository
+          .createQueryBuilder()
           .update()
           .set({
-            Deleted: false
+            Deleted: false,
           })
           .where('IdPlayer = :id', { id })
-        .execute().then(result => {
-          resolve(result.affected);
-        }).catch(err => {
-          reject(err.message || err);
-        });
+          .execute()
+          .then((result) => {
+            resolve(result.affected);
+          })
+          .catch((err) => {
+            reject(err.message || err);
+          });
       });
     } catch (err) {
       return Promise.reject(err.message || err);

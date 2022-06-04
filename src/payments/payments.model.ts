@@ -6,17 +6,17 @@ export class PaymentInput {
   IdPayment: number;
 
   @Field()
-  Description: string;
-
-  @Field()
   Denomination: number;
 
   @Field(() => Int)
   IdPayInstr: number;
 
   @Field(() => Int)
-  IdCoin: number;
+  IdCurrency: number;
 
   @Field(() => Boolean)
   Enabled: boolean;
+
+  @Field({ nullable: true })
+  Picture?: string;
 }
