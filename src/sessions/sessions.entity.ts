@@ -11,8 +11,8 @@ export class SessionsEntity {
   @Field()
   @Column()
   OpenDate: Date;
-  
-  @Field()
+
+  @Field({ nullable: true })
   @Column()
-  CloseDate: Date;
+  CloseDate?: Date;
 }

@@ -119,7 +119,7 @@ type CurrencyEntity {
 type SessionsEntity {
   IdSession: Int!
   OpenDate: DateTime!
-  CloseDate: DateTime!
+  CloseDate: DateTime
 }
 
 type CasinoInfoEntity {
