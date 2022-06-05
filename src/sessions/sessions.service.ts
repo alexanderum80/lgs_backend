@@ -71,8 +71,12 @@ export class SessionsService {
     try {
       return new Promise<number>((resolve, reject) => {
         getManager()
-          .query('SELECT public.fn_get_maxidsessions()')
-          .then((idSession) => {
+          .query(
+            'SELECT fn_get_maxidsessions from public.fn_get_maxidsessions()',
+          )
+          .then((res) => {
+            const idSession = res[0].fn_get_maxidsessions;
+
             const updateFields = {};
             if (openDate) {
               Object.assign(updateFields, { OpenDate: openDate });
