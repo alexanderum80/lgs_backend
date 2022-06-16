@@ -1,9 +1,8 @@
-import { UsersEntity } from './../users/users.entity';
-import { AuthGuard, DEFAULT_GRAPHQL_CONTEXT } from './../shared/helpers/auth.guard';
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { AuthGuard } from './../shared/helpers/auth.guard';
+import { Resolver, Query, Mutation, Args, Int, Float } from '@nestjs/graphql';
 import { CageService } from './cage.service';
 import { CageEntity } from './cage.entity';
-import { CageInput } from './cage.model';
+import { CageInput, MoneyBreakdown } from './cage.model';
 import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => CageEntity)
@@ -13,7 +12,7 @@ export class CageResolver {
   @Mutation(() => CageEntity)
   @UseGuards(new AuthGuard())
   async createCage(
-    @Args('createCageInput') createCageInput: CageInput
+    @Args('createCageInput') createCageInput: CageInput,
   ): Promise<CageEntity> {
     return this.cageService.create(createCageInput);
   }
@@ -34,5 +33,11 @@ export class CageResolver {
   @UseGuards(new AuthGuard())
   removeCage(@Args('idOperation', { type: () => Int }) idOperation: number) {
     return this.cageService.remove(idOperation);
+  }
+
+  @Query(() => [MoneyBreakdown])
+  // @UseGuards(new AuthGuard())
+  getMoneyBreakdown(@Args('amount', { type: () => Float }) amount: number) {
+    return this.cageService.getMoneyBreakdown(amount);
   }
 }

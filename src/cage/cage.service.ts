@@ -1,8 +1,8 @@
-import { CageEntity } from './cage.entity';
+import { CageEntity, CurrencyNowView } from './cage.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CageInput } from './cage.model';
-import { Repository } from 'typeorm';
+import { CageInput, MoneyBreakdown } from './cage.model';
+import { Repository, getManager, MoreThan } from 'typeorm';
 
 @Injectable()
 export class CageService {
@@ -73,6 +73,50 @@ export class CageService {
           .catch((err) => {
             reject(err.message || err);
           });
+      });
+    } catch (err) {
+      return Promise.reject(err.message || err);
+    }
+  }
+
+  async getMoneyBreakdown(amount: number): Promise<MoneyBreakdown[]> {
+    try {
+      const _moneyBreakdown: MoneyBreakdown[] = [];
+      return new Promise<MoneyBreakdown[]>((resolve, reject) => {
+        if (amount > 0) {
+          getManager()
+            .find(CurrencyNowView, {
+              where: { currencynow: MoreThan(0) },
+              order: { Denomination: 'DESC' },
+            })
+            .then((res) => {
+              let breakdown = 0;
+
+              for (let i = 0; i < res.length; i++) {
+                const element = res[i];
+
+                if (element.Denomination <= amount) {
+                  breakdown = Math.floor(amount / element.Denomination);
+                  if (breakdown > element.currencynow) {
+                    breakdown = element.currencynow;
+                  }
+
+                  amount = amount % element.Denomination;
+
+                  _moneyBreakdown.push({
+                    IdPayInstr: element.IdPayInstr,
+                    IdPayment: element.IdPayment,
+                    Quantity: breakdown,
+                  });
+                }
+              }
+
+              resolve(_moneyBreakdown);
+            })
+            .catch((err) => {
+              reject(err.message || err);
+            });
+        }
       });
     } catch (err) {
       return Promise.reject(err.message || err);

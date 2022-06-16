@@ -1,4 +1,4 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Int, Field, ObjectType } from '@nestjs/graphql';
 
 @InputType()
 export class CageInput {
@@ -7,25 +7,37 @@ export class CageInput {
 
   @Field(() => Int)
   IdTable: number;
-  
+
   @Field(() => Int)
   IdPlayer: number;
-    
+
   @Field(() => Int)
   IdOperationType: number;
-      
+
   @Field(() => Int)
   IdOperation: number;
-          
+
   @Field(() => Int)
   IdPayment: number;
 
   @Field()
   Date: Date;
-            
-  @Field(() => Int,)
+
+  @Field(() => Int)
   IdUser: number;
 
   @Field()
   Amount: number;
+}
+
+@ObjectType()
+export class MoneyBreakdown {
+  @Field()
+  IdPayInstr: number;
+
+  @Field()
+  IdPayment: number;
+
+  @Field()
+  Quantity: number;
 }

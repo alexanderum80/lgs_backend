@@ -203,6 +203,12 @@ type CageEntity {
   Amount: Float!
 }
 
+type MoneyBreakdown {
+  IdPayInstr: Float!
+  IdPayment: Float!
+  Quantity: Float!
+}
+
 type PaymentInstrumentsEntity {
   IdPayInstr: Int!
   Name: String!
@@ -330,6 +336,7 @@ type Query {
   getOperationDetails(id: Int!): [OperationsDEntity!]!
   getCages: [CageEntity!]!
   getCage(id: Int!): CageEntity!
+  getMoneyBreakdown(amount: Float!): [MoneyBreakdown!]!
   getPaymentInstruments: [PaymentInstrumentsEntity!]!
   getPaymentInstrument(id: Int!): PaymentInstrumentsEntity!
   getPayments: [PaymentsView!]!
