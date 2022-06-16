@@ -39,5 +39,11 @@ export class MoneyBreakdown {
   IdPayment: number;
 
   @Field()
+  Denomination: number;
+
+  @Field()
+  Rate: number;
+
+  @Field()
   Quantity: number;
 }

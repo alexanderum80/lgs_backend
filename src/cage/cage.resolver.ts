@@ -37,7 +37,10 @@ export class CageResolver {
 
   @Query(() => [MoneyBreakdown])
   // @UseGuards(new AuthGuard())
-  getMoneyBreakdown(@Args('amount', { type: () => Float }) amount: number) {
-    return this.cageService.getMoneyBreakdown(amount);
+  getMoneyBreakdown(
+    @Args('amount', { type: () => Float }) amount: number,
+    @Args('idOperation', { type: () => Int }) idOperation: number,
+  ) {
+    return this.cageService.getMoneyBreakdown(amount, idOperation);
   }
 }

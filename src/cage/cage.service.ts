@@ -1,3 +1,7 @@
+import {
+  EOperations,
+  EPaymentInstrument,
+} from './../operations/operations.model';
 import { CageEntity, CurrencyNowView } from './cage.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -79,15 +83,31 @@ export class CageService {
     }
   }
 
-  async getMoneyBreakdown(amount: number): Promise<MoneyBreakdown[]> {
+  async getMoneyBreakdown(
+    amount: number,
+    idOperation: EOperations,
+  ): Promise<MoneyBreakdown[]> {
     try {
       const _moneyBreakdown: MoneyBreakdown[] = [];
       return new Promise<MoneyBreakdown[]>((resolve, reject) => {
         if (amount > 0) {
+          const _conditions = { currencynow: MoreThan(0) };
+          switch (idOperation) {
+            case EOperations.DEPOSIT:
+              Object.assign(_conditions, {
+                IdPayInstr: EPaymentInstrument.PLATES,
+              });
+              break;
+            default:
+              Object.assign(_conditions, {
+                IdPayInstr: EPaymentInstrument.CASH,
+              });
+              break;
+          }
           getManager()
             .find(CurrencyNowView, {
-              where: { currencynow: MoreThan(0) },
-              order: { Denomination: 'DESC' },
+              where: _conditions,
+              order: { IdCurrency: 'ASC', Denomination: 'DESC' },
             })
             .then((res) => {
               let breakdown = 0;
@@ -96,16 +116,20 @@ export class CageService {
                 const element = res[i];
 
                 if (element.Denomination <= amount) {
-                  breakdown = Math.floor(amount / element.Denomination);
+                  breakdown = Math.floor(
+                    amount / (element.Denomination * element.Rate),
+                  );
                   if (breakdown > element.currencynow) {
                     breakdown = element.currencynow;
                   }
 
-                  amount = amount % element.Denomination;
+                  amount = amount % (element.Denomination * element.Rate);
 
                   _moneyBreakdown.push({
                     IdPayInstr: element.IdPayInstr,
                     IdPayment: element.IdPayment,
+                    Denomination: element.Denomination,
+                    Rate: element.Rate,
                     Quantity: breakdown,
                   });
                 }

@@ -60,7 +60,15 @@ export class CurrencyNowView {
 
   @Field()
   @ViewColumn()
+  IdCurrency: number;
+
+  @Field()
+  @ViewColumn()
   Denomination: number;
+
+  @Field()
+  @ViewColumn()
+  Rate: number;
 
   @Field()
   @ViewColumn()
