@@ -39,7 +39,7 @@ import 'dotenv/config';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '10.128.32.106',
+      host: 'localhost',
       username: 'postgres',
       password: 'admin',
       database: 'LGS',
